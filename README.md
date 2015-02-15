@@ -9,6 +9,7 @@
 Annotate syntax elements at box level.
 
 
+* [Usage examples](#usage-examples)
 * [Installation](#installation)
     * [Automatic installation](#automatic-installation)
     * [Manual installation](#manual-installation)
@@ -18,6 +19,14 @@ Annotate syntax elements at box level.
 * [Contributing](#contributing)
 * [License](#license)
 * [Versioning](#versioning)
+
+
+
+## Usage examples
+
+You can find usage examples in
+[answer to "How to convert a notebook cell to a string retaining all formatting, colorization of identifiers etc?" question](http://mathematica.stackexchange.com/a/74105/14303)
+on Mathematica Stack Exchange.
 
 
 
