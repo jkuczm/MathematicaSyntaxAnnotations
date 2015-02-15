@@ -1,0 +1,16 @@
+TestSuite[{
+	"Unit/undefinedSymbolQ.mt",
+	"Unit/symbolNameQ.mt",
+	"Unit/extractSymbolName.mt"
+	,
+	"Integration/Scoping.mt",
+	"Integration/ScopingNested.mt",
+	"Integration/Patterns.mt",
+	"Integration/PatternsNested.mt",
+	"Integration/PatternsDelayed.mt",
+	"Integration/PatternsDelayedNested.mt",
+	"Integration/Function.mt",
+	"Integration/Functions.mt",
+	"Integration/FunctionsNested.mt",
+	"Integration/MixedNested.mt"
+}]

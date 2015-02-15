@@ -1,0 +1,12 @@
+TestSuite[{
+	"Scoping.mt",
+	"ScopingNested.mt",
+	"Patterns.mt",
+	"PatternsNested.mt",
+	"PatternsDelayed.mt",
+	"PatternsDelayedNested.mt",
+	"Function.mt",
+	"Functions.mt",
+	"FunctionsNested.mt",
+	"MixedNested.mt"
+}]
