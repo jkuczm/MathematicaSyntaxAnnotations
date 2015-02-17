@@ -1084,6 +1084,8 @@ Module[
 Module[
 	{customFunctionNoSI}
 	,
+	customFunctionNoSI[___] = Null;
+	
 	Test[
 		customFunctionNoSI[a, b] // MakeBoxes // AnnotateSyntax
 		,
@@ -1092,7 +1094,24 @@ Module[
 			syntaxExpr[b, "UndefinedSymbol"]
 		] // MakeBoxes
 		,
-		TestID -> "customFunctionNoSI[a, b]"
+		TestID -> "defined customFunctionNoSI[a, b]"
+	]
+]
+
+
+Module[
+	{customFunctionNoSINoDefinition}
+	,
+	
+	Test[
+		customFunctionNoSINoDefinition[a, b] // MakeBoxes // AnnotateSyntax
+		,
+		syntaxExpr[customFunctionNoSINoDefinition, "UndefinedSymbol"][
+			syntaxExpr[a, "UndefinedSymbol"],
+			syntaxExpr[b, "UndefinedSymbol"]
+		] // MakeBoxes
+		,
+		TestID -> "undefined customFunctionNoSINoDefinition[a, b]"
 	]
 ]
 
