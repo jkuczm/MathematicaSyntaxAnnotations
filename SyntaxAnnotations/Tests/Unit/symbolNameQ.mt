@@ -25,6 +25,30 @@ Test[
 ]
 
 Test[
+	symbolNameQ[" "]
+	,
+	False
+	,
+	TestID -> "space"
+]
+
+Test[
+	symbolNameQ["\n"]
+	,
+	False
+	,
+	TestID -> "newline"
+]
+
+Test[
+	symbolNameQ["Null"]
+	,
+	True
+	,
+	TestID -> "Null"
+]
+
+Test[
 	symbolNameQ["1"]
 	,
 	False
@@ -158,6 +182,64 @@ Test[
 	True
 	,
 	TestID -> "built-in symbol name"
+]
+
+
+Test[
+	symbolNameQ["f[a, b]"]
+	,
+	False
+	,
+	TestID -> "non-atomic expression"
+]
+
+
+Test[
+	symbolNameQ["["]
+	,
+	False
+	,
+	TestID -> "incomplete expression"
+]
+
+
+Block[
+	{a, b}
+	,
+	symbolNameQ["a=b"];
+	
+	TestMatch[
+		a
+		,
+		HoldPattern[a]
+		,
+		TestID -> "evaluation leak"
+	]
+]
+
+
+Test[
+	symbolNameQ["$"]
+	,
+	True
+	,
+	TestID -> "dollar sign"
+]
+
+Test[
+	symbolNameQ["a$b"]
+	,
+	True
+	,
+	TestID -> "dollar sign between letters"
+]
+
+Test[
+	symbolNameQ["a\[UnderBracket]b"]
+	,
+	True
+	,
+	TestID -> "\\[UnderBracket] between letters"
 ]
 
 
