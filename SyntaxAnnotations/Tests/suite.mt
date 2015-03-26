@@ -1,7 +1,9 @@
 TestSuite[{
 	"Unit/undefinedSymbolQ.mt",
 	"Unit/symbolNameQ.mt",
-	"Unit/extractSymbolName.mt"
+	"Unit/whitespaceQ.mt",
+	"Unit/extractSymbolName.mt",
+	"Unit/extractArgs.mt"
 	,
 	"Integration/Scoping.mt",
 	"Integration/ScopingNested.mt",
@@ -12,5 +14,6 @@ TestSuite[{
 	"Integration/Function.mt",
 	"Integration/Functions.mt",
 	"Integration/FunctionsNested.mt",
-	"Integration/MixedNested.mt"
+	"Integration/MixedNested.mt",
+	"Integration/InputFormBoxes.mt"
 }]

@@ -73,6 +73,13 @@ symbolNameQ[\"str\"] \
 returns True if given String is valid symbol name, returns False otherwise."
 
 
+whitespaceQ::usage =
+"\
+whitespaceQ[\"str\"] \
+returns True if given String is empty or contains only whitespace characters, \
+returns False otherwise."
+
+
 extractSymbolName::usage =
 "\
 extractSymbolName[\"str\"] \
@@ -173,7 +180,18 @@ symbolNameQ[str_String] :=
 		heldSymbol =!= HoldComplete[Null]
 	]
 
-symbolNameQ[_] = False;
+symbolNameQ[_] = False
+
+
+(* ::Subsection:: *)
+(*whitespaceQ*)
+
+
+whitespaceQ[""] = True
+
+whitespaceQ[str_String] := StringMatchQ[str, Whitespace]
+
+whitespaceQ[_] = False
 
 
 (* ::Subsection:: *)
@@ -191,7 +209,7 @@ undefinedSymbolQ[
 undefinedSymbolQ[sym : _String?symbolNameQ | _Symbol] :=
 	! MemberQ[Language`ExtendedDefinition[sym][[1, 2, ;; -2, 2]], Except[{}]]
 
-undefinedSymbolQ[_] = False;
+undefinedSymbolQ[_] = False
 
 
 (* ::Subsection:: *)
@@ -258,13 +276,15 @@ extractLocalVariableNames["Scoping" | "Function"][
 	Alternatives @@ Cases[
 		argBoxes
 		,
-		RowBox[{name_String, $assignmentOperators, _}] :>
+		RowBox[{name_String, ___String?whitespaceQ, $assignmentOperators, __}] :>
 			extractSymbolName[name]
 		,
 		{0, Infinity}
 	] |
 	Alternatives @@ Cases[
-		argBoxes /. RowBox[{_String, $assignmentOperators, _}] -> RowBox[{}]
+		argBoxes /.
+			RowBox[{_String, ___String?whitespaceQ, $assignmentOperators, __}] ->
+				RowBox[{}]
 		,
 		name_String /;
 			StringMatchQ[
@@ -316,12 +336,25 @@ extractArgs[boxes_, 0] := {boxes} /. SyntaxBox[var_, __] :> var
 extractArgs[arg_String, {min_, max_} /; min <= 1 <= max] := {arg}
 
 extractArgs[RowBox[argsBoxes:{___}], {min_Integer, max:_Integer|Infinity}] :=
-	With[{args = DeleteCases[argsBoxes, ","] /. SyntaxBox[var_, __] :> var},
+	Module[{args},
+		args = argsBoxes /. SyntaxBox[var_, __] :> var;
+		args = DeleteCases[args, _String?whitespaceQ];
+		args =
+			FixedPoint[
+				Replace[#,
+					{l___, PatternSequence[",", ","], r___} :>
+						{l, ",", "", ",", r}
+				]&
+				,
+				args
+			];
+		args = DeleteCases[args, ","];
 		Take[args, {Max[1, min], Min[Length[args], max]}]
 	]
+
 extractArgs[argsBoxes_, {i_}] := extractArgs[argsBoxes, {i, i}]
 
-extractArgs[_, {_, _}] = {};
+extractArgs[_, {_, _}] = {}
 
 
 (* ::Subsection:: *)
@@ -415,7 +448,19 @@ annotateSyntaxInternal[
 		]
 	]
 
-annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
+annotateSyntaxInternal[
+	RowBox[{
+		whitespace1___String?whitespaceQ,
+		arg1_,
+		whitespace2___String?whitespaceQ,
+		"\[Function]",
+		whitespace3___String?whitespaceQ,
+		arg2_,
+		whitespace4___String?whitespaceQ
+	}]
+	,
+	rules_
+] :=
 	withLocalVariables[
 		"Function",
 		localVarsPatt,
@@ -435,6 +480,8 @@ annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
 			}
 			,
 			RowBox[{
+				whitespace1
+				,
 				Internal`InheritedBlock[{annotateSyntaxInternal},
 					Unprotect[annotateSyntaxInternal];
 					PrependTo[
@@ -462,9 +509,15 @@ annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
 					annotateSyntaxInternal[arg1, Prepend[rules, rule]]
 				]
 				,
+				whitespace2
+				,
 				"\[Function]"
 				,
+				whitespace3
+				,
 				annotateSyntaxInternal[arg2, Prepend[rules, rule]]
+				,
+				whitespace4
 			}]
 		]
 	]
@@ -472,7 +525,13 @@ annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
 annotateSyntaxInternal[
 	RowBox[{
 		funcName : "With" | "Module" | "Block" | "Function", "[",
-			args:RowBox[{arg1_, ",", restArgs___}],
+			args:RowBox[{
+				whitespace1___String?whitespaceQ,
+				arg1_,
+				whitespace2___String?whitespaceQ,
+				",",
+				restArgs___
+			}],
 		"]"
 	}]
 	,
@@ -495,6 +554,8 @@ annotateSyntaxInternal[
 			RowBox[{
 				funcName,
 				"["
+				,
+				whitespace1
 				,
 				RowBox[{
 					Internal`InheritedBlock[{annotateSyntaxInternal},
@@ -523,6 +584,8 @@ annotateSyntaxInternal[
 						];
 						annotateSyntaxInternal[arg1, Prepend[rules, rule]]
 					]
+					,
+					whitespace2
 					,
 					","
 					,
@@ -572,10 +635,19 @@ annotateSyntaxInternal[
 
 annotateSyntaxInternal[
 	boxes : RowBox[{
-		PatternSequence[tag_, tagSep:"/:"] | PatternSequence[],
+		whitespace1___String?whitespaceQ,
+		PatternSequence[
+			tag_,
+			whitespace2___String?whitespaceQ,
+			tagSep:"/:"
+		] | PatternSequence[],
+		whitespace3___String?whitespaceQ,
 		lhs_,
+		whitespace4___String?whitespaceQ,
 		funcName:$patternOperators | $patternDelayedOperators,
-		rhs_
+		whitespace5___String?whitespaceQ,
+		rhs_,
+		whitespace6___String?whitespaceQ
 	}]
 	,
 	rules_
@@ -586,8 +658,9 @@ annotateSyntaxInternal[
 		boxes /. "/:" | $patternOperators | $patternDelayedOperators -> ","
 		,
 		RowBox[{
+			whitespace1,
 			Sequence @@ ReplaceAll[
-				{tag, tagSep, lhs}
+				{tag, whitespace2, tagSep, whitespace3, lhs}
 				,
 				str_String :>
 					annotateSyntaxInternal[
@@ -602,7 +675,11 @@ annotateSyntaxInternal[
 					]
 			]
 			,
+			whitespace4
+			,
 			annotateSyntaxInternal[funcName, rules]
+			,
+			whitespace5
 			,
 			If[MatchQ[funcName, $patternDelayedOperators],
 				annotateSyntaxInternal[
@@ -625,6 +702,8 @@ annotateSyntaxInternal[
 			(* else *),
 				annotateSyntaxInternal[rhs, rules]
 			]
+			,
+			whitespace6
 		}]
 	]
 
