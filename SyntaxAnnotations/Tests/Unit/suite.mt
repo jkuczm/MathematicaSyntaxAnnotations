@@ -2,5 +2,6 @@ TestSuite[{
 	"undefinedSymbolQ.mt",
 	"symbolNameQ.mt",
 	"whitespaceQ.mt",
-	"extractSymbolName.mt"
+	"extractSymbolName.mt",
+	"extractArgs.mt"
 }]

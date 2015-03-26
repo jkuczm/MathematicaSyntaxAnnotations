@@ -2,7 +2,8 @@ TestSuite[{
 	"Unit/undefinedSymbolQ.mt",
 	"Unit/symbolNameQ.mt",
 	"Unit/whitespaceQ.mt",
-	"Unit/extractSymbolName.mt"
+	"Unit/extractSymbolName.mt",
+	"Unit/extractArgs.mt"
 	,
 	"Integration/Scoping.mt",
 	"Integration/ScopingNested.mt",
