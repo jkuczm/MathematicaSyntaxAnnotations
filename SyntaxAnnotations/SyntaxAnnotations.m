@@ -276,13 +276,15 @@ extractLocalVariableNames["Scoping" | "Function"][
 	Alternatives @@ Cases[
 		argBoxes
 		,
-		RowBox[{name_String, $assignmentOperators, _}] :>
+		RowBox[{name_String, ___String?whitespaceQ, $assignmentOperators, __}] :>
 			extractSymbolName[name]
 		,
 		{0, Infinity}
 	] |
 	Alternatives @@ Cases[
-		argBoxes /. RowBox[{_String, $assignmentOperators, _}] -> RowBox[{}]
+		argBoxes /.
+			RowBox[{_String, ___String?whitespaceQ, $assignmentOperators, __}] ->
+				RowBox[{}]
 		,
 		name_String /;
 			StringMatchQ[
@@ -446,7 +448,19 @@ annotateSyntaxInternal[
 		]
 	]
 
-annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
+annotateSyntaxInternal[
+	RowBox[{
+		whitespace1___String?whitespaceQ,
+		arg1_,
+		whitespace2___String?whitespaceQ,
+		"\[Function]",
+		whitespace3___String?whitespaceQ,
+		arg2_,
+		whitespace4___String?whitespaceQ
+	}]
+	,
+	rules_
+] :=
 	withLocalVariables[
 		"Function",
 		localVarsPatt,
@@ -466,6 +480,8 @@ annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
 			}
 			,
 			RowBox[{
+				whitespace1
+				,
 				Internal`InheritedBlock[{annotateSyntaxInternal},
 					Unprotect[annotateSyntaxInternal];
 					PrependTo[
@@ -493,9 +509,15 @@ annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
 					annotateSyntaxInternal[arg1, Prepend[rules, rule]]
 				]
 				,
+				whitespace2
+				,
 				"\[Function]"
 				,
+				whitespace3
+				,
 				annotateSyntaxInternal[arg2, Prepend[rules, rule]]
+				,
+				whitespace4
 			}]
 		]
 	]
@@ -503,7 +525,13 @@ annotateSyntaxInternal[RowBox[{arg1_, "\[Function]", arg2_}], rules_] :=
 annotateSyntaxInternal[
 	RowBox[{
 		funcName : "With" | "Module" | "Block" | "Function", "[",
-			args:RowBox[{arg1_, ",", restArgs___}],
+			args:RowBox[{
+				whitespace1___String?whitespaceQ,
+				arg1_,
+				whitespace2___String?whitespaceQ,
+				",",
+				restArgs___
+			}],
 		"]"
 	}]
 	,
@@ -526,6 +554,8 @@ annotateSyntaxInternal[
 			RowBox[{
 				funcName,
 				"["
+				,
+				whitespace1
 				,
 				RowBox[{
 					Internal`InheritedBlock[{annotateSyntaxInternal},
@@ -554,6 +584,8 @@ annotateSyntaxInternal[
 						];
 						annotateSyntaxInternal[arg1, Prepend[rules, rule]]
 					]
+					,
+					whitespace2
 					,
 					","
 					,
@@ -603,10 +635,19 @@ annotateSyntaxInternal[
 
 annotateSyntaxInternal[
 	boxes : RowBox[{
-		PatternSequence[tag_, tagSep:"/:"] | PatternSequence[],
+		whitespace1___String?whitespaceQ,
+		PatternSequence[
+			tag_,
+			whitespace2___String?whitespaceQ,
+			tagSep:"/:"
+		] | PatternSequence[],
+		whitespace3___String?whitespaceQ,
 		lhs_,
+		whitespace4___String?whitespaceQ,
 		funcName:$patternOperators | $patternDelayedOperators,
-		rhs_
+		whitespace5___String?whitespaceQ,
+		rhs_,
+		whitespace6___String?whitespaceQ
 	}]
 	,
 	rules_
@@ -617,8 +658,9 @@ annotateSyntaxInternal[
 		boxes /. "/:" | $patternOperators | $patternDelayedOperators -> ","
 		,
 		RowBox[{
+			whitespace1,
 			Sequence @@ ReplaceAll[
-				{tag, tagSep, lhs}
+				{tag, whitespace2, tagSep, whitespace3, lhs}
 				,
 				str_String :>
 					annotateSyntaxInternal[
@@ -633,7 +675,11 @@ annotateSyntaxInternal[
 					]
 			]
 			,
+			whitespace4
+			,
 			annotateSyntaxInternal[funcName, rules]
+			,
+			whitespace5
 			,
 			If[MatchQ[funcName, $patternDelayedOperators],
 				annotateSyntaxInternal[
@@ -656,6 +702,8 @@ annotateSyntaxInternal[
 			(* else *),
 				annotateSyntaxInternal[rhs, rules]
 			]
+			,
+			whitespace6
 		}]
 	]
 
