@@ -180,7 +180,7 @@ symbolNameQ[str_String] :=
 		heldSymbol =!= HoldComplete[Null]
 	]
 
-symbolNameQ[_] = False;
+symbolNameQ[_] = False
 
 
 (* ::Subsection:: *)
@@ -209,7 +209,7 @@ undefinedSymbolQ[
 undefinedSymbolQ[sym : _String?symbolNameQ | _Symbol] :=
 	! MemberQ[Language`ExtendedDefinition[sym][[1, 2, ;; -2, 2]], Except[{}]]
 
-undefinedSymbolQ[_] = False;
+undefinedSymbolQ[_] = False
 
 
 (* ::Subsection:: *)
