@@ -73,6 +73,13 @@ symbolNameQ[\"str\"] \
 returns True if given String is valid symbol name, returns False otherwise."
 
 
+whitespaceQ::usage =
+"\
+whitespaceQ[\"str\"] \
+returns True if given String is empty or contains only whitespace characters, \
+returns False otherwise."
+
+
 extractSymbolName::usage =
 "\
 extractSymbolName[\"str\"] \
@@ -174,6 +181,17 @@ symbolNameQ[str_String] :=
 	]
 
 symbolNameQ[_] = False;
+
+
+(* ::Subsection:: *)
+(*whitespaceQ*)
+
+
+whitespaceQ[""] = True
+
+whitespaceQ[str_String] := StringMatchQ[str, Whitespace]
+
+whitespaceQ[_] = False
 
 
 (* ::Subsection:: *)
