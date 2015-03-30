@@ -15,5 +15,6 @@ TestSuite[{
 	"Integration/Functions.mt",
 	"Integration/FunctionsNested.mt",
 	"Integration/MixedNested.mt",
-	"Integration/InputFormBoxes.mt"
+	"Integration/InputFormBoxes.mt",
+	"Integration/FormattingWhitespace.mt"
 }]
