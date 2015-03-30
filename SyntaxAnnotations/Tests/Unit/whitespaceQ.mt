@@ -16,40 +16,64 @@ PrependTo[$ContextPath, "SyntaxAnnotations`Private`"]
 (*Tests*)
 
 
+(* ::Subsection:: *)
+(*No arguments*)
+
+
+Test[
+	whitespaceQ[]
+	,
+	True
+	,
+	TestID -> "No arguments"
+]
+
+
+(* ::Subsection:: *)
+(*One argument*)
+
+
 Test[
 	whitespaceQ[""]
 	,
 	True
 	,
-	TestID -> "empty"
+	TestID -> "One argument: empty"
 ]
 Test[
 	whitespaceQ[" "]
 	,
 	True
 	,
-	TestID -> "space"
+	TestID -> "One argument: space"
 ]
 Test[
 	whitespaceQ["\n"]
 	,
 	True
 	,
-	TestID -> "\\n"
+	TestID -> "One argument: \\n"
 ]
 Test[
 	whitespaceQ["\t"]
 	,
 	True
 	,
-	TestID -> "\\t"
+	TestID -> "One argument: \\t"
 ]
 Test[
-	whitespaceQ[" \t \n  "]
+	whitespaceQ["\[IndentingNewLine]"]
 	,
 	True
 	,
-	TestID -> "whitespace combination"
+	TestID -> "One argument: \\[IndentingNewLine]"
+]
+Test[
+	whitespaceQ[" \t \n  \[IndentingNewLine] "]
+	,
+	True
+	,
+	TestID -> "One argument: whitespace combination"
 ]
 
 
@@ -58,35 +82,57 @@ Test[
 	,
 	False
 	,
-	TestID -> "integer"
+	TestID -> "One argument: Integer"
 ]
 Test[
 	whitespaceQ["b"]
 	,
 	False
 	,
-	TestID -> "single letter"
+	TestID -> "One argument: single letter"
 ]
 Test[
 	whitespaceQ["$"]
 	,
 	False
 	,
-	TestID -> "dollar sign"
+	TestID -> "One argument: dollar sign"
 ]
 Test[
 	whitespaceQ["\[UnderBracket]"]
 	,
 	False
 	,
-	TestID -> "\\[UnderBracket]"
+	TestID -> "One argument: \\[UnderBracket]"
 ]
 Test[
 	whitespaceQ["Null"]
 	,
 	False
 	,
-	TestID -> "Null"
+	TestID -> "One argument: Null"
+]
+
+
+(* ::Subsection:: *)
+(*Many arguments*)
+
+
+Test[
+	whitespaceQ["", " ", "\n", "\t", "\[IndentingNewLine]"]
+	,
+	True
+	,
+	TestID -> "Many arguments: whitespace"
+]
+
+
+Test[
+	whitespaceQ["", " ", "\n", "a", "\t", "\[IndentingNewLine]"]
+	,
+	False
+	,
+	TestID -> "Many arguments: one non-whitespace"
 ]
 
 

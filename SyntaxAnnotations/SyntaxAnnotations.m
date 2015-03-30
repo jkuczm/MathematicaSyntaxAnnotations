@@ -75,9 +75,9 @@ returns True if given String is valid symbol name, returns False otherwise."
 
 whitespaceQ::usage =
 "\
-whitespaceQ[\"str\"] \
-returns True if given String is empty or contains only whitespace characters, \
-returns False otherwise."
+whitespaceQ[\"str1\", \"str2\", ...] \
+returns True if given strings are empty or contain only whitespace or \
+\\[IndentingNewLine] characters, returns False otherwise."
 
 
 extractSymbolName::usage =
@@ -187,11 +187,11 @@ symbolNameQ[_] = False
 (*whitespaceQ*)
 
 
-whitespaceQ[""] = True
-
-whitespaceQ[str_String] := StringMatchQ[str, Whitespace]
-
-whitespaceQ[_] = False
+whitespaceQ =
+	StringMatchQ[
+		StringJoin[##],
+		(WhitespaceCharacter | "\[IndentingNewLine]")...
+	]&
 
 
 (* ::Subsection:: *)
