@@ -468,6 +468,24 @@ annotateSyntaxInternal[str_String, rules_] :=
 
 annotateSyntaxInternal[boxes_?AtomQ, _] := boxes
 
+(* Following definition is here for performance reasons only. *)
+annotateSyntaxInternal[
+	RowBox[l_List /;
+		FreeQ[
+			l
+			,
+			"[" | "]" | "&" | "\[Function]" |
+				$patternOperators | $patternDelayedOperators |
+				"\[Integral]" | SubsuperscriptBox["\[Integral]", _, _] |
+				UnderoverscriptBox["\[Sum]" | "\[Product]", _, _]
+			,
+			{1}
+		]
+	],
+	rules_
+] :=
+	RowBox[annotateSyntaxInternal[#, rules] & /@ l]
+
 annotateSyntaxInternal[
 	RowBox[{
 		ws1___String, funcName : "With" | "Module" | "Block" | "Function",
