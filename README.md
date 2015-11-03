@@ -3,7 +3,7 @@
 [![releases](http://img.shields.io/github/release/jkuczm/MathematicaSyntaxAnnotations.svg)](https://github.com/jkuczm/MathematicaSyntaxAnnotations/releases)
 [![SemVer 2.0.0](http://img.shields.io/badge/SemVer-2.0.0-brightgreen.svg)](http://semver.org/spec/v2.0.0.html)
 [![license MIT](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jkuczm/MathematicaSyntaxAnnotations/blob/master/LICENSE)
-[![Mathematica 8.0 - 10.3](http://img.shields.io/badge/Mathematica-8.0 -- 10.2-brightgreen.svg)](#compatibility)
+[![Mathematica 8.0 - 10.3](http://img.shields.io/badge/Mathematica-8.0 -- 10.3-brightgreen.svg)](#compatibility)
 
 
 Annotate syntax elements at box level.
