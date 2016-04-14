@@ -175,9 +175,12 @@ $assignmentOperators = "=" | ":=" | "^=" | "^:="
 symbolNameQ["Null"] = True
 
 symbolNameQ[str_String] :=
-	With[{heldSymbol = Quiet @ ToExpression[str, InputForm, HoldComplete]},
-		MatchQ[heldSymbol, HoldComplete[_Symbol]] &&
-		heldSymbol =!= HoldComplete[Null]
+	And[
+		StringFreeQ[str, WhitespaceCharacter],
+		MatchQ[
+			Quiet @ MakeExpression[str, StandardForm],
+			HoldComplete[Except[Null | Symbol[___], _Symbol]]
+		]
 	]
 
 symbolNameQ[_] = False
