@@ -443,6 +443,33 @@ Test[
 ]
 
 
+(* ::Subsection:: *)
+(*String in Functions*)
+
+
+Test[
+	RowBox[{"Integrate", "[", RowBox[{
+		RowBox[{
+			"a",
+			"\"\<a\>\""
+		}],
+		",",
+		"a"
+	}],"]"}] // AnnotateSyntax
+	,
+	RowBox[{"Integrate", "[", RowBox[{
+		RowBox[{
+			SyntaxBox["a", "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxBox["\"\<a\>\"", "String"]
+		}],
+		",",
+		SyntaxBox["a", "FunctionLocalVariable", "UndefinedSymbol"]
+	}],"]"}]
+	,
+	TestID -> "Integrate[a \"a\", a]"
+]
+
+
 (* ::Section:: *)
 (*TearDown*)
 
