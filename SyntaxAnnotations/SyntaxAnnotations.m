@@ -474,6 +474,47 @@ annotateSyntaxInternal[str_String, rules_] :=
 
 annotateSyntaxInternal[boxes_?AtomQ, _] := boxes
 
+annotateSyntaxInternal[RowBox[{"::"}], _] = RowBox[{"::"}]
+
+annotateSyntaxInternal[
+	RowBox[{sym___, "::", tag___, "::", lang___, "::", excess___}],
+	rules_
+] :=
+	RowBox@Join[
+		annotateSyntaxInternal[#, rules] & /@ {sym},
+		{If[{sym} === {}, SyntaxBox["::", "SyntaxError"], "::"]},
+		SyntaxBox[#, "String"] & /@ {tag},
+		{"::"},
+		SyntaxBox[#, "String"] & /@ {lang},
+		{SyntaxBox["::", "ExcessArgument"]},
+		SyntaxBox[#, "ExcessArgument"] & /@ {excess}
+	]
+
+annotateSyntaxInternal[
+	RowBox[{sym___, "::", tag___, "::", lang___}],
+	rules_
+] :=
+	RowBox@Join[
+		annotateSyntaxInternal[#, rules] & /@ {sym},
+		{If[{sym} === {}, SyntaxBox["::", "SyntaxError"], "::"]},
+		SyntaxBox[#, "String"] & /@ {tag},
+		{If[{lang} === {}, SyntaxBox["::", "SyntaxError"], "::"]},
+		SyntaxBox[#, "String"] & /@ {lang}
+	]
+
+annotateSyntaxInternal[RowBox[{sym___, "::", tag___}], rules_] :=
+	RowBox@Join[
+		annotateSyntaxInternal[#, rules] & /@ {sym},
+		{
+			If[{sym} === {} || {tag} === {},
+				SyntaxBox["::", "SyntaxError"]
+			(* else *),
+				"::"
+			]
+		},
+		SyntaxBox[#, "String"] & /@ {tag}
+	]
+		
 (* Following definition is here for performance reasons only. *)
 annotateSyntaxInternal[
 	RowBox[l_List /;
