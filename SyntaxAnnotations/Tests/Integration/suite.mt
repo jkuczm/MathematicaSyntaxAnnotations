@@ -9,6 +9,7 @@ TestSuite[{
 	"Functions.mt",
 	"FunctionsNested.mt",
 	"Strings.mt",
+	"InfixMessageName.mt",
 	"MixedNested.mt",
 	"InputFormBoxes.mt",
 	"FormattingWhitespace.mt"
