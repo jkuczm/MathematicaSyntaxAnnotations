@@ -852,22 +852,45 @@ Options[AnnotateSyntax] = {
 
 
 AnnotateSyntax[boxes_, OptionsPattern[]] :=
-	Module[{whitePos, boxesCleanParsed, syntaxPosClean, syntaxPos},
-		whitePos = Position[boxes, _String?whitespaceQ, {-1}, Heads -> False];
+	Module[
+		{
+			commentPlaceholder, boxesCommRepl, commPos, boxesComm, ignoredPos,
+			boxesClean, boxesCleanParsed, syntaxPosClean, syntaxPos
+		},
+		boxesCommRepl =
+			boxes /. RowBox[{"(*", ___, "*)"}] -> commentPlaceholder;
+		commPos =
+			Position[boxesCommRepl, commentPlaceholder, {-1}, Heads -> False];
+		boxesComm = MapAt[SyntaxBox[#, "Comment"]&, boxes, commPos];
+		ignoredPos =
+			Join[
+				Position[boxesCommRepl,
+					_String?whitespaceQ,
+					{-1},
+					Heads -> False
+				],
+				commPos
+			];
+		boxesClean = Delete[boxesCommRepl, ignoredPos];
+		If[{boxesClean} === {}, Return[boxesComm, Module]];
+		
 		boxesCleanParsed =
 			annotateSyntaxInternal[
-				Delete[boxes, whitePos],
+				boxesClean,
 				OptionValue["BoxesToAnnoattiontypes"]
 			];
 		syntaxPosClean =
 			Position[boxesCleanParsed, _SyntaxBox, Heads -> False];
 		syntaxPos =
 			Extract[
-				Delete[MapIndexed[#2&, boxes, {-1}, Heads -> True], whitePos],
+				Delete[
+					MapIndexed[#2&, boxes, {-1}, Heads -> True],
+					ignoredPos
+				],
 				syntaxPosClean,
 				posExprPosition
 			];
-		ReplacePart[boxes,
+		ReplacePart[boxesComm,
 			MapThread[{#1} -> ReplacePart[#2, 1 -> #3] &, {
 				syntaxPos,
 				Extract[boxesCleanParsed, syntaxPosClean],
