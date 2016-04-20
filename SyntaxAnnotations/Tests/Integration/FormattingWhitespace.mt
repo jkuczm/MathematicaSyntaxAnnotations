@@ -55,7 +55,7 @@ Test[
 			SyntaxBox["a", "UndefinedSymbol"], "\n"
 	}]
 	,
-	TestID -> "a_ :> a"
+	TestID -> "a_ -> a"
 ]
 
 
@@ -130,7 +130,7 @@ Test[
 
 Test[
 	RowBox[{
-		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t" RowBox[{
+		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t", RowBox[{
 			"\n", "a", ",", " ", "b", " "
 		}], "", "}", "\t\n"}],
 		" ", "\[Function]", " \[IndentingNewLine]",
@@ -138,7 +138,7 @@ Test[
 	}] // AnnotateSyntax
 	,
 	RowBox[{
-		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t" RowBox[{
+		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t", RowBox[{
 			"\n", SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
 			",", " ",
 			SyntaxBox["b", "PatternVariable", "UndefinedSymbol"], " "
