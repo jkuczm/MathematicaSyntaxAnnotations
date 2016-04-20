@@ -17,6 +17,22 @@ Get["SyntaxAnnotations`Tests`Integration`init`"]
 
 
 Test[
+	" \t\n\[IndentingNewLine]" // AnnotateSyntax
+	,
+	" \t\n\[IndentingNewLine]"
+	,
+	TestID -> "whitespace"
+]
+Test[
+	RowBox[{"\n", " ", "\[IndentingNewLine]", "\t"}] // AnnotateSyntax
+	,
+	RowBox[{"\n", " ", "\[IndentingNewLine]", "\t"}]
+	,
+	TestID -> "whitespace only RowBox"
+]
+
+
+Test[
 	RowBox[{
 		"\t", "a_", "\[IndentingNewLine]",
 			"/:", "\n\t",
