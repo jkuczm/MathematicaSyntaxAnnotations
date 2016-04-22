@@ -3,9 +3,4 @@
 Get["SyntaxAnnotations`"]
 Get["SyntaxAnnotations`Tests`Integration`Utilities`"]
 
-SetOptions[AnnotateSyntax,
-	"BoxRules" -> {
-		SyntaxBox[boxes_, types__] :>
-			SyntaxBox[boxes, Sequence @@ NormalizeAnnotationTypes[types]]
-	}
-]
+SetOptions[AnnotateSyntax, "Annotation" -> (SyntaxBox[#1, Sequence @@ #2]&)]
