@@ -12,9 +12,15 @@ ClearAll["`*"]
 (*Usage messages*)
 
 
-syntaxExpr::usage =
+SyntaxBox::usage =
 "\
-syntaxExpr[expr, types] \
+SyntaxBox[expr, type1, type2, ...] \
+represents boxes that in an expression perform sytnax roles of given types."
+
+
+SyntaxExpr::usage =
+"\
+SyntaxExpr[expr, type1, type2, ...] \
 converted to boxes gives SyntaxBox with expr converted to boxes and given \
 annotation types."
 
@@ -26,14 +32,11 @@ annotation types."
 Begin["`Private`"]
 
 
-Needs["SyntaxAnnotations`"]
-
-
 (* ::Subsection:: *)
 (*syntaxExpr*)
 
 
-MakeBoxes[syntaxExpr[expr_, types___], StandardForm] ^:=
+MakeBoxes[SyntaxExpr[expr_, types___], StandardForm] ^:=
 	SyntaxBox[MakeBoxes[expr], types]
 
 

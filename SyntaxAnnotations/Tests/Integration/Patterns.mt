@@ -22,7 +22,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a -> a]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] -> syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] -> SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a -> a"
@@ -33,7 +33,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ -> a]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] -> syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] -> SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ -> a"
@@ -44,7 +44,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a__ -> a]
 	,
 	MakeBoxes[
-		syntaxExpr[a__, "PatternVariable"] -> syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a__, "PatternVariable"] -> SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a__ -> a"
@@ -55,7 +55,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a___ -> a]
 	,
 	MakeBoxes[
-		syntaxExpr[a___, "PatternVariable"] -> syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a___, "PatternVariable"] -> SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a___ -> a"
@@ -65,7 +65,7 @@ Test[
 Test[
 	AnnotateSyntax @ MakeBoxes[_a -> a]
 	,
-	MakeBoxes[_a -> syntaxExpr[a, "UndefinedSymbol"]]
+	MakeBoxes[_a -> SyntaxExpr[a, "UndefinedSymbol"]]
 	,
 	TestID -> "_a -> a"
 ]
@@ -74,7 +74,7 @@ Test[
 Test[
 	AnnotateSyntax @ MakeBoxes[__a -> a]
 	,
-	MakeBoxes[__a -> syntaxExpr[a, "UndefinedSymbol"]]
+	MakeBoxes[__a -> SyntaxExpr[a, "UndefinedSymbol"]]
 	,
 	TestID -> "__a -> a"
 ]
@@ -83,7 +83,7 @@ Test[
 Test[
 	AnnotateSyntax @ MakeBoxes[___a -> a]
 	,
-	MakeBoxes[___a -> syntaxExpr[a, "UndefinedSymbol"]]
+	MakeBoxes[___a -> SyntaxExpr[a, "UndefinedSymbol"]]
 	,
 	TestID -> "___a -> a"
 ]
@@ -93,8 +93,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_b -> a b]
 	,
 	MakeBoxes[
-		syntaxExpr[a_b, "PatternVariable"] ->
-			syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a_b, "PatternVariable"] ->
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_b -> a b"
@@ -104,7 +104,7 @@ Test[
 Test[
 	AnnotateSyntax @ MakeBoxes[a -> a_]
 	,
-	MakeBoxes[syntaxExpr[a, "UndefinedSymbol"] -> a_]
+	MakeBoxes[SyntaxExpr[a, "UndefinedSymbol"] -> a_]
 	,
 	TestID -> "a -> a_"
 ]
@@ -114,7 +114,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ \[Rule] a]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] -> syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] -> SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ \\[Rule] a"
@@ -125,8 +125,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ b_ -> a b]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] syntaxExpr[b_, "PatternVariable"] ->
-			syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] SyntaxExpr[b_, "PatternVariable"] ->
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ b_ -> a b"
@@ -137,8 +137,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ a -> a]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] syntaxExpr[a, "UndefinedSymbol"] ->
-			syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] SyntaxExpr[a, "UndefinedSymbol"] ->
+			SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ a -> a"
@@ -153,7 +153,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a = a]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] = syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] = SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a = a"
@@ -164,7 +164,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ = a]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] = syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] = SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ = a"
@@ -174,7 +174,7 @@ Test[
 Test[
 	AnnotateSyntax @ MakeBoxes[a = a_]
 	,
-	MakeBoxes[syntaxExpr[a, "UndefinedSymbol"] = a_]
+	MakeBoxes[SyntaxExpr[a, "UndefinedSymbol"] = a_]
 	,
 	TestID -> "a = a_"
 ]
@@ -184,8 +184,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ b_ = a b]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] syntaxExpr[b_, "PatternVariable"] =
-			syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] SyntaxExpr[b_, "PatternVariable"] =
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ b_ = a b"
@@ -200,7 +200,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a ^= a]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] ^= syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] ^= SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a ^= a"
@@ -211,7 +211,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ ^= a]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] ^= syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] ^= SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ ^= a"
@@ -221,7 +221,7 @@ Test[
 Test[
 	AnnotateSyntax @ MakeBoxes[a ^= a_]
 	,
-	MakeBoxes[syntaxExpr[a, "UndefinedSymbol"] ^= a_]
+	MakeBoxes[SyntaxExpr[a, "UndefinedSymbol"] ^= a_]
 	,
 	TestID -> "a ^= a_"
 ]
@@ -231,8 +231,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ b_ ^= a b]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] syntaxExpr[b_, "PatternVariable"] ^=
-			syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] SyntaxExpr[b_, "PatternVariable"] ^=
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ b_ ^= a b"
@@ -247,8 +247,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a /: a = a]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] /: syntaxExpr[a, "UndefinedSymbol"] =
-			syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] /: SyntaxExpr[a, "UndefinedSymbol"] =
+			SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a /: a = a"
@@ -259,8 +259,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ /: a = a]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] /: syntaxExpr[a, "UndefinedSymbol"] =
-			syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] /: SyntaxExpr[a, "UndefinedSymbol"] =
+			SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ /: a = a"
@@ -271,8 +271,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a /: a_ = a]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] /: syntaxExpr[a_, "PatternVariable"] =
-			syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] /: SyntaxExpr[a_, "PatternVariable"] =
+			SyntaxExpr[a, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a /: a_ = a"
@@ -283,7 +283,7 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a /: a = a_]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] /: syntaxExpr[a, "UndefinedSymbol"] =
+		SyntaxExpr[a, "UndefinedSymbol"] /: SyntaxExpr[a, "UndefinedSymbol"] =
 			a_
 	]
 	,
@@ -295,10 +295,10 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a_ b_ /: a b = a b]
 	,
 	MakeBoxes[
-		syntaxExpr[a_, "PatternVariable"] syntaxExpr[b_, "PatternVariable"] /:
-			syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"] =
-				syntaxExpr[a, "UndefinedSymbol"] *
-				syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a_, "PatternVariable"] SyntaxExpr[b_, "PatternVariable"] /:
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"] =
+				SyntaxExpr[a, "UndefinedSymbol"] *
+				SyntaxExpr[b, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a_ b_ /: a b = a b"
@@ -309,11 +309,11 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a b /: a_ b_ = a b]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"] /:
-			syntaxExpr[a_, "PatternVariable"] *
-			syntaxExpr[b_, "PatternVariable"] =
-				syntaxExpr[a, "UndefinedSymbol"] *
-				syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"] /:
+			SyntaxExpr[a_, "PatternVariable"] *
+			SyntaxExpr[b_, "PatternVariable"] =
+				SyntaxExpr[a, "UndefinedSymbol"] *
+				SyntaxExpr[b, "UndefinedSymbol"]
 	]
 	,
 	TestID -> "a b /: a_ b_ = a b"
@@ -324,8 +324,8 @@ Test[
 	AnnotateSyntax @ MakeBoxes[a b /: a b = a_ b_]
 	,
 	MakeBoxes[
-		syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"] /:
-			syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"] =
+		SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"] /:
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"] =
 				a_ b_
 	]
 	,

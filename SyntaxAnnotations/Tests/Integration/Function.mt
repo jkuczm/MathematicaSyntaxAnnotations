@@ -21,7 +21,7 @@ Get["SyntaxAnnotations`Tests`Integration`init`"]
 Test[
 	Function[a] // MakeBoxes // AnnotateSyntax
 	,
-	Function[syntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
+	Function[SyntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
 	,
 	TestID -> "Function[a]"
 ]
@@ -29,7 +29,7 @@ Test[
 Test[
 	Function[#] // MakeBoxes // AnnotateSyntax
 	,
-	Function[syntaxExpr[#, "PatternVariable"]] // MakeBoxes
+	Function[SyntaxExpr[#, "PatternVariable"]] // MakeBoxes
 	,
 	TestID -> "Function[#]"
 ]
@@ -37,7 +37,7 @@ Test[
 Test[
 	Function[#2] // MakeBoxes // AnnotateSyntax
 	,
-	Function[syntaxExpr[#2, "PatternVariable"]] // MakeBoxes
+	Function[SyntaxExpr[#2, "PatternVariable"]] // MakeBoxes
 	,
 	TestID -> "Function[#2]"
 ]
@@ -45,7 +45,7 @@ Test[
 Test[
 	Function[##] // MakeBoxes // AnnotateSyntax
 	,
-	Function[syntaxExpr[##, "PatternVariable"]] // MakeBoxes
+	Function[SyntaxExpr[##, "PatternVariable"]] // MakeBoxes
 	,
 	TestID -> "Function[##]"
 ]
@@ -53,7 +53,7 @@ Test[
 Test[
 	Function[##3] // MakeBoxes // AnnotateSyntax
 	,
-	Function[syntaxExpr[##3, "PatternVariable"]] // MakeBoxes
+	Function[SyntaxExpr[##3, "PatternVariable"]] // MakeBoxes
 	,
 	TestID -> "Function[##3]"
 ]
@@ -62,7 +62,7 @@ If[$VersionNumber >= 10,
 	Test[
 		Function[#name] // MakeBoxes // AnnotateSyntax
 		,
-		Function[syntaxExpr[#name, "PatternVariable"]] // MakeBoxes
+		Function[SyntaxExpr[#name, "PatternVariable"]] // MakeBoxes
 		,
 		TestID -> "Function[#name]"
 	]
@@ -81,8 +81,8 @@ Test[
 	Function[a, b] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a, b]"
@@ -92,8 +92,8 @@ Test[
 	Function[a, a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a, a]"
@@ -103,8 +103,8 @@ Test[
 	Function[a, _a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[_a, "PatternVariable"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[_a, "PatternVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a, _a]"
@@ -114,8 +114,8 @@ Test[
 	Function[a, a_] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[a_, "PatternVariable"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[a_, "PatternVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a, a_]"
@@ -125,8 +125,8 @@ Test[
 	Function[_a, a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[_a, "PatternVariable"],
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		SyntaxExpr[_a, "PatternVariable"],
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[_a, a]"
@@ -135,7 +135,7 @@ Test[
 Test[
 	Function[a_, a] // MakeBoxes // AnnotateSyntax
 	,
-	Function[a_, syntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
+	Function[a_, SyntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
 	,
 	TestID -> "Function[a_, a]"
 ]
@@ -144,8 +144,8 @@ Test[
 	Function[a b, a b] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"],
-		syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"],
+		SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a b, a b]"
@@ -155,8 +155,8 @@ Test[
 	Function[a = b, a b] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "UndefinedSymbol"] = syntaxExpr[b, "UndefinedSymbol"],
-		syntaxExpr[a, "UndefinedSymbol"] syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"] = SyntaxExpr[b, "UndefinedSymbol"],
+		SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a = b, a b]"
@@ -171,8 +171,8 @@ Test[
 	Function[{a}, b] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		{syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
-		syntaxExpr[b, "UndefinedSymbol"]
+		{SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
+		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a}, b]"
@@ -182,8 +182,8 @@ Test[
 	Function[{a}, a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		{syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		{SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a}, a]"
@@ -193,8 +193,8 @@ Test[
 	Function[{a}, _a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		{syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
-		syntaxExpr[_a, "PatternVariable"]
+		{SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
+		SyntaxExpr[_a, "PatternVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a}, _a]"
@@ -204,8 +204,8 @@ Test[
 	Function[{a}, a_] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		{syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
-		syntaxExpr[a_, "PatternVariable"]
+		{SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a_, "PatternVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a}, a_]"
@@ -215,8 +215,8 @@ Test[
 	Function[{_a}, a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		{syntaxExpr[_a, "PatternVariable"]},
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		{SyntaxExpr[_a, "PatternVariable"]},
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{_a}, a]"
@@ -225,7 +225,7 @@ Test[
 Test[
 	Function[{a_}, a] // MakeBoxes // AnnotateSyntax
 	,
-	Function[{a_}, syntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
+	Function[{a_}, SyntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
 	,
 	TestID -> "Function[{a_}, a]"
 ]
@@ -235,12 +235,12 @@ Test[
 	,
 	Function[
 		{
-			syntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
 		}
 		,
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
-		syntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a b}, a b]"
@@ -251,12 +251,12 @@ Test[
 	,
 	Function[
 		{
-			syntaxExpr[a, "PatternVariable", "UndefinedSymbol"] =
-				syntaxExpr[b, "UndefinedSymbol"]
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] =
+				SyntaxExpr[b, "UndefinedSymbol"]
 		}
 		,
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
-		syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a = b}, a b]"
@@ -267,12 +267,12 @@ Test[
 	,
 	Function[
 		{
-			syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-			syntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+			SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
 		}
 		,
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
-		syntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[{a, b}, a b]"
@@ -287,9 +287,9 @@ Test[
 	Function[a, b, c] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[b, "UndefinedSymbol"],
-		syntaxExpr[c, "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[b, "UndefinedSymbol"],
+		SyntaxExpr[c, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a, b, c]"
@@ -299,9 +299,9 @@ Test[
 	Function[a, a, a] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
-		syntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"],
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Function[a, a, a]"

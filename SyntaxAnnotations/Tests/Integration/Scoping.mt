@@ -18,8 +18,8 @@ Test[
 	With[a, a] // MakeBoxes // AnnotateSyntax
 	,
 	With[
-		syntaxExpr[a, "UndefinedSymbol"],
-		syntaxExpr[a, "UndefinedSymbol"]
+		SyntaxExpr[a, "UndefinedSymbol"],
+		SyntaxExpr[a, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "With[a, a]"
@@ -29,8 +29,8 @@ Test[
 Test[
 	Module[{a}, a] // MakeBoxes // AnnotateSyntax
 	,
-	Module[{syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
+	Module[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Module[{a}, a]"
@@ -40,8 +40,8 @@ Test[
 Test[
 	Block[{a}, a_] // MakeBoxes // AnnotateSyntax
 	,
-	Block[{syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[a_, "FunctionLocalVariable"]
+	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a_, "FunctionLocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Block[{a}, a_]"
@@ -51,8 +51,8 @@ Test[
 Test[
 	With[{a}, a__] // MakeBoxes // AnnotateSyntax
 	,
-	With[{syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[a__, "LocalVariable"]
+	With[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a__, "LocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "With[{a}, a__]"
@@ -62,8 +62,8 @@ Test[
 Test[
 	Module[{a}, a___] // MakeBoxes // AnnotateSyntax
 	,
-	Module[{syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[a___, "LocalVariable"]
+	Module[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a___, "LocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Module[{a}, a___]"
@@ -73,8 +73,8 @@ Test[
 Test[
 	Block[{a}, _a] // MakeBoxes // AnnotateSyntax
 	,
-	Block[{syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[_a, "FunctionLocalVariable"]
+	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[_a, "FunctionLocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Block[{a}, _a]"
@@ -84,8 +84,8 @@ Test[
 Test[
 	With[{a}, __a] // MakeBoxes // AnnotateSyntax
 	,
-	With[{syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[__a, "LocalVariable"]
+	With[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[__a, "LocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "With[{a}, __a]"
@@ -95,8 +95,8 @@ Test[
 Test[
 	Module[{a}, ___a] // MakeBoxes // AnnotateSyntax
 	,
-	Module[{syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[___a, "LocalVariable"]
+	Module[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[___a, "LocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "Module[{a}, ___a]"
@@ -106,8 +106,8 @@ Test[
 Test[
 	Block[{a}, b] // MakeBoxes // AnnotateSyntax
 	,
-	Block[{syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[b, "UndefinedSymbol"]
+	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Block[{a}, b]"
@@ -117,8 +117,8 @@ Test[
 Test[
 	With[{a}, a_b] // MakeBoxes // AnnotateSyntax
 	,
-	With[{syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		syntaxExpr[a_b, "LocalVariable"]
+	With[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a_b, "LocalVariable"]
 	] // MakeBoxes
 	,
 	TestID -> "With[{a}, a_b]"
@@ -128,7 +128,7 @@ Test[
 Test[
 	Module[{b}, a_b] // MakeBoxes // AnnotateSyntax
 	,
-	Module[{syntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
+	Module[{SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
 		a_b
 	] // MakeBoxes
 	,
@@ -141,12 +141,12 @@ Test[
 	,
 	Block[
 		{
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] =
-				syntaxExpr[b, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] =
+				SyntaxExpr[b, "UndefinedSymbol"]
 		}
 		,
-		syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-		syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Block[{a = b}, a b]"
@@ -158,11 +158,11 @@ Test[
 	,
 	With[
 		{
-			syntaxExpr[a, "LocalVariable", "UndefinedSymbol"] =
-				syntaxExpr[a, "UndefinedSymbol"]
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] =
+				SyntaxExpr[a, "UndefinedSymbol"]
 		}
 		,
-		syntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "With[{a = a}, a]"
