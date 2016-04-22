@@ -841,7 +841,7 @@ syntaxStyleBox[boxes_, annotationTypes_] :=
 
 Options[AnnotateSyntax] = {
 	"Annotation" -> Automatic,
-	"BoxesToAnnoattiontypes" :> $BoxesToAnnotationTypes
+	"BoxesToAnnotationTypes" :> $BoxesToAnnotationTypes
 }
 
 
@@ -874,7 +874,7 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 		boxesCleanParsed =
 			annotateSyntaxInternal[
 				boxesClean,
-				OptionValue["BoxesToAnnoattiontypes"]
+				OptionValue["BoxesToAnnotationTypes"]
 			];
 		syntaxPosClean =
 			Position[boxesCleanParsed, _syntaxBox, Heads -> False];
