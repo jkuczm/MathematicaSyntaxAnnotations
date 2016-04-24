@@ -300,6 +300,74 @@ Test[
 	TestID -> "built-in: String"
 ]
 
+Test[
+	undefinedSymbolQ[Null]
+	,
+	False
+	,
+	TestID -> "built-in Null: Symbol"
+]
+Test[
+	undefinedSymbolQ["Null"]
+	,
+	False
+	,
+	TestID -> "built-in Null: String"
+]
+
+Test[
+	undefinedSymbolQ[\[Infinity]]
+	,
+	False
+	,
+	TestID -> "parsed to built-in: Symbol"
+]
+Test[
+	undefinedSymbolQ["\[Infinity]"]
+	,
+	False
+	,
+	TestID -> "parsed to built-in: String"
+]
+
+
+Block[{a, b},
+	a := (b = "leak");
+	
+	Test[
+		undefinedSymbolQ[a]
+		,
+		False
+		,
+		TestID -> "evaluation leak: Symbol: returned value"
+	];
+	Test[
+		b // Hold[#]&
+		,
+		b // Hold
+		,
+		TestID -> "evaluation leak: Symbol: test variable"
+	]
+]
+Block[{a, b},
+	a := (b = "leak");
+	
+	Test[
+		undefinedSymbolQ["a"]
+		,
+		False
+		,
+		TestID -> "evaluation leak: String: returned value"
+	];
+	Test[
+		b // Hold[#]&
+		,
+		b // Hold
+		,
+		TestID -> "evaluation leak: String: test variable"
+	]
+]
+
 
 (* ::Section:: *)
 (*TearDown*)
