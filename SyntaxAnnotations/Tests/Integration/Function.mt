@@ -131,6 +131,16 @@ Test[
 	,
 	TestID -> "Function[_a, a]"
 ]
+Test[
+	Function[_\[SpadeSuit]1, \[SpadeSuit]1] // MakeBoxes // AnnotateSyntax
+	,
+	Function[
+		SyntaxExpr[_\[SpadeSuit]1, "PatternVariable"],
+		SyntaxExpr[\[SpadeSuit]1, "PatternVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Function[_\\[SpadeSuit]1, \\[SpadeSuit]1]"
+]
 
 Test[
 	Function[a_, a] // MakeBoxes // AnnotateSyntax

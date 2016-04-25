@@ -38,6 +38,16 @@ Test[
 	,
 	TestID -> "a_ -> a"
 ]
+Test[
+	AnnotateSyntax @ MakeBoxes[a\[UnderBracket]b_ -> a\[UnderBracket]b]
+	,
+	MakeBoxes[
+		SyntaxExpr[a\[UnderBracket]b_, "PatternVariable"] ->
+			SyntaxExpr[a\[UnderBracket]b, "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a\\[UnderBracket]b_ -> a\\[UnderBracket]b"
+]
 
 
 Test[

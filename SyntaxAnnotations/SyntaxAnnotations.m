@@ -286,10 +286,7 @@ extractLocalVariableNames["Manipulate"][
 	name
 
 extractLocalVariableNames["Function"][
-	name_String /;
-		StringMatchQ[name,
-			("_" .. | "") ~~ LetterCharacter ~~ WordCharacter...
-		]
+	name_String /; StringMatchQ[name, "_"... ~~ Except["_"]...]
 ] := extractSymbolName[name]
 
 extractLocalVariableNames["Scoping" | "Function"][
@@ -308,12 +305,8 @@ extractLocalVariableNames["Scoping" | "Function"][
 			RowBox[{_String, $assignmentOperators, __}] ->
 				RowBox[{}]
 		,
-		name_String /;
-			StringMatchQ[
-				name,
-				("_" .. | "") ~~ LetterCharacter ~~ WordCharacter...
-			] :>
-				extractSymbolName[name]
+		name_String /; StringMatchQ[name, "_"... ~~ Except["_"]...] :>
+			extractSymbolName[name]
 		,
 		{0, Infinity}
 	] // Flatten
@@ -335,15 +328,11 @@ extractLocalVariableNames["PatternName"][boxes_] :=
 	Alternatives @@ Cases[
 		boxes
 		,
-		(
-			name_String /; 
-				StringMatchQ[
-					name,
-					LetterCharacter ~~ WordCharacter ... ~~ "_" ~~
-						(WordCharacter | "_") ...
-				]
-		) | 
-			RowBox[{name_String, ":", __}] :> extractSymbolName[name]
+		Alternatives[
+			name_String /; StringMatchQ[name, Except["_"].. ~~ "_" ~~ ___], 
+			RowBox[{name_String, ":", __}]
+		] :>
+			extractSymbolName[name]
 		,
 		{0, Infinity}
 	] // Flatten
