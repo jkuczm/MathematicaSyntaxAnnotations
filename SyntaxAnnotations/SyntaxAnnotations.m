@@ -716,8 +716,11 @@ parse[
 			withModifiedTypes[{patternNameTypes},
 				{{"PatternVariable", funcName, "LHS"}, localVars}
 				,
-				Sequence @@ ReplaceAll[{tag, tagSep, lhs},
-					str_String :> parse[str]
+				(*	Block modifyTypes, so that constructs in LHS of rules and
+					assignments don't change syntax roles, since that's the
+					observed behavior. *)
+				Sequence @@ Block[{modifyTypes},
+					parse /@ {tag, tagSep, lhs}
 				]
 			]
 			,

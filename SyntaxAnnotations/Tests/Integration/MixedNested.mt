@@ -471,6 +471,28 @@ Test[
 
 
 (* ::Subsection:: *)
+(*InfixMessageName in Patterns LHS, String in Patterns RHS*)
+
+
+Test[
+	RowBox[{RowBox[{"f", "::", "usage"}], "=", "\"\<something\>\""}] //
+		AnnotateSyntax
+	,
+	RowBox[{
+		RowBox[{
+			SyntaxBox["f", "UndefinedSymbol"],
+			"::",
+			SyntaxBox["usage", "String"]
+		}],
+		"=",
+		SyntaxBox["\"\<something\>\"", "String"]
+	}]
+	,
+	TestID -> "f::usage = \"something\""
+]
+
+
+(* ::Subsection:: *)
 (*Scopping in InfixMessageName*)
 
 
