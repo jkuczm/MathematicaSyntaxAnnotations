@@ -19,7 +19,7 @@ PrependTo[$ContextPath, "SyntaxAnnotations`Private`"]
 Test[
 	extractSymbolName[""]
 	,
-	Alternatives[]
+	{}
 	,
 	TestID -> "empty"
 ]
@@ -27,7 +27,7 @@ Test[
 Test[
 	extractSymbolName["1"]
 	,
-	Alternatives[]
+	{}
 	,
 	TestID -> "integer"
 ]
@@ -35,7 +35,7 @@ Test[
 Test[
 	extractSymbolName["2a"]
 	,
-	Alternatives[]
+	{}
 	,
 	TestID -> "start with integer"
 ]
@@ -43,7 +43,7 @@ Test[
 Test[
 	extractSymbolName["b"]
 	,
-	Alternatives["b"]
+	{"b"}
 	,
 	TestID -> "single letter"
 ]
@@ -51,7 +51,7 @@ Test[
 Test[
 	extractSymbolName["c3"]
 	,
-	Alternatives["c3"]
+	{"c3"}
 	,
 	TestID -> "end with integer"
 ]
@@ -59,7 +59,7 @@ Test[
 Test[
 	extractSymbolName["_d"]
 	,
-	Alternatives["d"]
+	{"d"}
 	,
 	TestID -> "Blank with head"
 ]
@@ -67,7 +67,7 @@ Test[
 Test[
 	extractSymbolName["__e"]
 	,
-	Alternatives["e"]
+	{"e"}
 	,
 	TestID -> "BlankSequence with head"
 ]
@@ -75,7 +75,7 @@ Test[
 Test[
 	extractSymbolName["___f"]
 	,
-	Alternatives["f"]
+	{"f"}
 	,
 	TestID -> "BlankNullSequence with head"
 ]
@@ -83,7 +83,7 @@ Test[
 Test[
 	extractSymbolName["g_"]
 	,
-	Alternatives["g"]
+	{"g"}
 	,
 	TestID -> "named Blank"
 ]
@@ -91,7 +91,7 @@ Test[
 Test[
 	extractSymbolName["h__"]
 	,
-	Alternatives["h"]
+	{"h"}
 	,
 	TestID -> "named BlankSequence"
 ]
@@ -99,7 +99,7 @@ Test[
 Test[
 	extractSymbolName["i___"]
 	,
-	Alternatives["i"]
+	{"i"}
 	,
 	TestID -> "named BlankNullSequence"
 ]
@@ -107,7 +107,7 @@ Test[
 Test[
 	extractSymbolName["j_k"]
 	,
-	Alternatives["j"]
+	{"j"}
 	,
 	TestID -> "named Blank with head"
 ]
@@ -115,7 +115,7 @@ Test[
 Test[
 	extractSymbolName["l__m"]
 	,
-	Alternatives["l"]
+	{"l"}
 	,
 	TestID -> "named BlankSequence with head"
 ]
@@ -123,7 +123,7 @@ Test[
 Test[
 	extractSymbolName["n___o"]
 	,
-	Alternatives["n"]
+	{"n"}
 	,
 	TestID -> "named BlankNullSequence with head"
 ]
@@ -131,7 +131,7 @@ Test[
 Test[
 	extractSymbolName["aBc"]
 	,
-	Alternatives["aBc"]
+	{"aBc"}
 	,
 	TestID -> "multiple letters"
 ]
@@ -139,7 +139,7 @@ Test[
 Test[
 	extractSymbolName["a2c"]
 	,
-	Alternatives["a2c"]
+	{"a2c"}
 	,
 	TestID -> "integer inside"
 ]
@@ -147,7 +147,7 @@ Test[
 Test[
 	extractSymbolName["a_b__c"]
 	,
-	Alternatives["a"]
+	{"a"}
 	,
 	TestID -> "two underscore sequences"
 ]
@@ -155,7 +155,7 @@ Test[
 Test[
 	extractSymbolName["Block"]
 	,
-	Alternatives["Block"]
+	{"Block"}
 	,
 	TestID -> "built-in symbol name"
 ]

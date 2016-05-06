@@ -273,6 +273,21 @@ Test[
 ]
 
 Test[
+	Function[{a = a}, a] // MakeBoxes // AnnotateSyntax
+	,
+	Function[
+		{
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] =
+				SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		}
+		,
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Function[{a = a}, a]"
+]
+
+Test[
 	Function[{a, b}, a b] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
@@ -440,6 +455,26 @@ Test[
 	}]
 	,
 	TestID -> "(a = b) \\[Function] a b"
+]
+
+Test[
+	RowBox[{
+		RowBox[{"(", RowBox[{"a", "=", "a"}], ")"}],
+		"\[Function]",
+		"a"
+	}] // AnnotateSyntax
+	,
+	RowBox[{
+		RowBox[{"(", RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			"=",
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+		}], ")"}],
+		"\[Function]",
+		SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+	}]
+	,
+	TestID -> "(a = a) \\[Function] a"
 ]
 
 
