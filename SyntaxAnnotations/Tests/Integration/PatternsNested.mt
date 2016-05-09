@@ -54,7 +54,7 @@ Test[
 	,
 	MakeBoxes[
 		(
-			SyntaxExpr[a_, "PatternVariable"] =
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] =
 				SyntaxExpr[a_, "PatternVariable"]
 		) =
 			SyntaxExpr[a, "UndefinedSymbol"]
@@ -85,7 +85,7 @@ Test[
 	,
 	MakeBoxes[
 		(
-			SyntaxExpr[a_, "PatternVariable"] ^=
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] ^=
 				SyntaxExpr[a_, "PatternVariable"]
 		) ^=
 			SyntaxExpr[a, "UndefinedSymbol"]
@@ -116,8 +116,8 @@ Test[
 	,
 	MakeBoxes[
 		(
-			SyntaxExpr[a_, "PatternVariable"] /:
-				SyntaxExpr[a_, "PatternVariable"] =
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] /:
+				SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] =
 					SyntaxExpr[a_, "PatternVariable"]
 		) /:
 			SyntaxExpr[a, "UndefinedSymbol"] = SyntaxExpr[a, "UndefinedSymbol"]
@@ -132,8 +132,8 @@ Test[
 	,
 	MakeBoxes[
 		SyntaxExpr[a, "UndefinedSymbol"] /: (
-			SyntaxExpr[a_, "PatternVariable"] /:
-				SyntaxExpr[a_, "PatternVariable"] =
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] /:
+				SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] =
 					SyntaxExpr[a_, "PatternVariable"]
 		) = SyntaxExpr[a, "UndefinedSymbol"]
 	]

@@ -15,62 +15,138 @@ Get["SyntaxAnnotations`Tests`Integration`init`"]
 
 
 (* ::Subsection:: *)
-(*One argument*)
+(*&*)
 
 
 Test[
-	Function[a] // MakeBoxes // AnnotateSyntax
+	a & // MakeBoxes // AnnotateSyntax
 	,
-	Function[SyntaxExpr[a, "UndefinedSymbol"]] // MakeBoxes
+	SyntaxExpr[a, "UndefinedSymbol"] & // MakeBoxes
+	,
+	TestID -> "a &"
+]
+
+Test[
+	# & // MakeBoxes // AnnotateSyntax
+	,
+	SyntaxExpr[#, "PatternVariable"] & // MakeBoxes
+	,
+	TestID -> "# &"
+]
+
+Test[
+	#2 & // MakeBoxes // AnnotateSyntax
+	,
+	SyntaxExpr[#2, "PatternVariable"] & // MakeBoxes
+	,
+	TestID -> "#2 &"
+]
+
+Test[
+	## & // MakeBoxes // AnnotateSyntax
+	,
+	SyntaxExpr[##, "PatternVariable"] & // MakeBoxes
+	,
+	TestID -> "## &"
+]
+
+Test[
+	##3 & // MakeBoxes // AnnotateSyntax
+	,
+	SyntaxExpr[##3, "PatternVariable"] & // MakeBoxes
+	,
+	TestID -> "##3 &"
+]
+
+If[$VersionNumber >= 10,
+	Test[
+		#name & // MakeBoxes // AnnotateSyntax
+		,
+		SyntaxExpr[#name, "PatternVariable"] & // MakeBoxes
+		,
+		TestID -> "#name &"
+	]
+]
+
+Test[
+	# + ##3 & // MakeBoxes // AnnotateSyntax
+	,
+	SyntaxExpr[#, "PatternVariable"] + SyntaxExpr[##3, "PatternVariable"] & //
+		MakeBoxes
+	,
+	TestID -> "# + ##3 &"
+]
+
+
+(* ::Subsection:: *)
+(*Function one argument*)
+
+
+Test[
+	RowBox[{"Function", "[", "a", "]"}] // AnnotateSyntax
+	,
+	RowBox[{"Function", "[", SyntaxBox["a", "UndefinedSymbol"], "]"}]
 	,
 	TestID -> "Function[a]"
 ]
 
 Test[
-	Function[#] // MakeBoxes // AnnotateSyntax
+	RowBox[{"Function", "[", "#", "]"}] // AnnotateSyntax
 	,
-	Function[SyntaxExpr[#, "PatternVariable"]] // MakeBoxes
+	RowBox[{"Function", "[", SyntaxBox["#", "PatternVariable"], "]"}]
 	,
 	TestID -> "Function[#]"
 ]
 
 Test[
-	Function[#2] // MakeBoxes // AnnotateSyntax
+	RowBox[{"Function", "[", "#1", "]"}] // AnnotateSyntax
 	,
-	Function[SyntaxExpr[#2, "PatternVariable"]] // MakeBoxes
+	RowBox[{"Function", "[", SyntaxBox["#1", "PatternVariable"], "]"}]
 	,
-	TestID -> "Function[#2]"
+	TestID -> "Function[#1]"
 ]
 
 Test[
-	Function[##] // MakeBoxes // AnnotateSyntax
+	RowBox[{"Function", "[", "##", "]"}] // AnnotateSyntax
 	,
-	Function[SyntaxExpr[##, "PatternVariable"]] // MakeBoxes
+	RowBox[{"Function", "[", SyntaxBox["##", "PatternVariable"], "]"}]
 	,
 	TestID -> "Function[##]"
 ]
 
 Test[
-	Function[##3] // MakeBoxes // AnnotateSyntax
+	RowBox[{"Function", "[", "##11", "]"}] // AnnotateSyntax
 	,
-	Function[SyntaxExpr[##3, "PatternVariable"]] // MakeBoxes
+	RowBox[{"Function", "[", SyntaxBox["##11", "PatternVariable"], "]"}]
 	,
-	TestID -> "Function[##3]"
+	TestID -> "Function[##11]"
 ]
 
 If[$VersionNumber >= 10,
 	Test[
-		Function[#name] // MakeBoxes // AnnotateSyntax
+		RowBox[{"Function", "[", "#name", "]"}] // AnnotateSyntax
 		,
-		Function[SyntaxExpr[#name, "PatternVariable"]] // MakeBoxes
+		RowBox[{"Function", "[", SyntaxBox["#name", "PatternVariable"], "]"}]
 		,
 		TestID -> "Function[#name]"
 	]
 ]
 
+Test[
+	RowBox[{"Function", "[", RowBox[{"##", "+", "#9"}], "]"}] // AnnotateSyntax
+	,
+	RowBox[{"Function", "[", RowBox[{
+		SyntaxBox["##", "PatternVariable"],
+		"+",
+		SyntaxBox["#9", "PatternVariable"]
+	}], "]"}]
+	,
+	TestID -> "Function[## + #9]"
+]
+
 
 (* ::Subsection:: *)
-(*Two arguments*)
+(*Function two arguments*)
 
 
 (* ::Subsubsection:: *)
@@ -288,6 +364,36 @@ Test[
 ]
 
 Test[
+	Function[{a_ = b}, a b] // MakeBoxes // AnnotateSyntax
+	,
+	Function[
+		{SyntaxExpr[a_, "PatternVariable"] = SyntaxExpr[b, "UndefinedSymbol"]},
+		SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Function[{a_ = b}, a b]"
+]
+
+Test[
+	Function[{f[a] = a b}, f a b] // MakeBoxes // AnnotateSyntax
+	,
+	Function[
+		{
+			SyntaxExpr[f, "PatternVariable", "UndefinedSymbol"][
+				SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+			] =
+				SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+				SyntaxExpr[b, "UndefinedSymbol"]
+		},
+		SyntaxExpr[f, "PatternVariable", "UndefinedSymbol"] *
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Function[{a_ = b}, a b]"
+]
+
+Test[
 	Function[{a, b}, a b] // MakeBoxes // AnnotateSyntax
 	,
 	Function[
@@ -305,7 +411,7 @@ Test[
 
 
 (* ::Subsection:: *)
-(*Three arguments*)
+(*Function three arguments*)
 
 
 Test[

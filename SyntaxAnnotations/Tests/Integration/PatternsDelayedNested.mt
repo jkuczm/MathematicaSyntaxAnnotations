@@ -20,6 +20,10 @@ Get["SyntaxAnnotations`Tests`Integration`init`"]
 (*RuleDelayed*)
 
 
+(* ::Subsubsection:: *)
+(*RuleDelayed*)
+
+
 Test[
 	AnnotateSyntax @ MakeBoxes[a_ :> (b_ :> a b)]
 	,
@@ -65,7 +69,47 @@ Test[
 ]
 
 
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ :> a_) :> a a_]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] :>
+		 		SyntaxExpr[a_, "PatternVariable", "LocalScopeConflict"]
+		 ) :>
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[a_, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "(a_ :> a_) :> a a_"
+]
+
+
+(* ::Subsubsection:: *)
+(*SetDelayed*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ := a_) :> a a_]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] :=
+		 		SyntaxExpr[a_, "PatternVariable", "LocalScopeConflict"]
+		 ) :>
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[a_, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "(a_ := a_) :> a a_"
+]
+
+
 (* ::Subsection:: *)
+(*SetDelayed*)
+
+
+(* ::Subsubsection:: *)
 (*SetDelayed*)
 
 
@@ -114,7 +158,47 @@ Test[
 ]
 
 
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ := a_) := a a_]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] :=
+		 		SyntaxExpr[a_, "LocalScopeConflict"]
+		 ) :=
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[a_, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "(a_ := a_) := a a_"
+]
+
+
+(* ::Subsubsection:: *)
+(*RuleDelayed*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ :> a_) := a a_]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] :>
+		 		SyntaxExpr[a_, "PatternVariable"]
+		 ) :=
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[a_, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "(a_ :> a_) := a a_"
+]
+
+
 (* ::Subsection:: *)
+(*UpSetDelayed*)
+
+
+(* ::Subsubsection:: *)
 (*UpSetDelayed*)
 
 
@@ -164,6 +248,10 @@ Test[
 
 
 (* ::Subsection:: *)
+(*TagSetDelayed*)
+
+
+(* ::Subsubsection:: *)
 (*TagSetDelayed*)
 
 

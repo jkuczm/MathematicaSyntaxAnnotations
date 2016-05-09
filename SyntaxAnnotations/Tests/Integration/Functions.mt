@@ -298,6 +298,18 @@ Test[
 ]
 
 
+Test[
+	Solve[Solve, {Solve}] // MakeBoxes // AnnotateSyntax
+	,
+	Solve[
+		SyntaxExpr[Solve, "FunctionLocalVariable"],
+		{SyntaxExpr[Solve, "FunctionLocalVariable"]}
+	] // MakeBoxes
+	,
+	TestID -> "Solve[Solve, {Solve}]"
+]
+
+
 (* ::Subsection:: *)
 (*Limit*)
 
