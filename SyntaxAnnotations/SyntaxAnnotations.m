@@ -136,13 +136,22 @@ Block, otherwise it's false."
 patternNameTypes::usage =
 "\
 patternNameTypes[name] \
-returns List of syntax types assigned to pattern with given name."
+returns List of syntax types assigned to pattern with given name. DownValues \
+of this function are changed during parsing."
 
 
 stringBoxTypes::usage =
 "\
-patternNameTypes[str] \
-returns List of syntax types assigned to given box String str."
+stringBoxTypes[str] \
+returns List of syntax types assigned to given box String str. DownValues \
+of this function are changed during parsing."
+
+
+deafultStringBoxTypes::usage =
+"\
+deafultStringBoxTypes[str] \
+returns List of syntax types assigned to given box String str, excluding \
+contex dependend types assigned during parsing."
 
 
 modifyTypes::usage =
@@ -417,6 +426,11 @@ extractLocalVariableNames[type : "Rules" | "Assignment"][
 		extractLocalVariableNames[type] /@ {rest}
 	} // Flatten
 
+extractLocalVariableNames[type : {"Scoping", "List"} | "\[Function]"][
+	RowBox[{_String, ":", rest__}]
+] :=
+	extractLocalVariableNames[type] /@ {rest} // Flatten
+
 extractLocalVariableNames[{"Scoping", "List"} | "Function" | "\[Function]"][
 	name_String /; StringMatchQ[name, "_"... ~~ Except["_"]...]
 ] :=
@@ -527,7 +541,19 @@ patternNameTypes[_] = {}
 (*stringBoxTypes*)
 
 
+stringBoxTypes[str_] :=
+	With[{split = StringSplit[str, "_", 2]},
+		patternNameTypes @ First[split] /; MatchQ[split, {Except[""], _}]
+	]
+
 stringBoxTypes[_] = {}
+
+
+(* ::Subsection:: *)
+(*deafultStringBoxTypes*)
+
+
+deafultStringBoxTypes[_] = {}
 
 
 (* ::Subsection:: *)
@@ -656,6 +682,32 @@ parse[_][str_String] :=
 	]
 
 parse[_][boxes_?AtomQ] := boxes
+
+parse[mode_][RowBox[{name_String, ":", rest__}]] :=
+	RowBox@Join[
+		{
+			Module[
+				{
+					types =
+						Join[
+							deafultStringBoxTypes[name],
+							patternNameTypes @@ extractSymbolName[name]
+						]
+				},
+				If[types =!= {},
+					If[!$directlyInScopingRHS,
+						PrependTo[types, "NotDirectlyInScopingRHS"]
+					];
+					
+					syntaxBox[name, types]
+				(* else *),
+					name
+				]
+			],
+			":"
+		},
+		parse[mode] /@ {rest}
+	]
 
 parse[_][RowBox[{"::"}]] = RowBox[{"::"}]
 
@@ -1108,11 +1160,6 @@ $stringBoxToTypes = {
 	str_ /; StringMatchQ[str, "\"*\""] -> {"String"}
 	,
 	_?undefinedSymbolQ -> {"UndefinedSymbol"}
-	,
-	str_ :>
-		With[{split = StringSplit[str, "_", 2]},
-			patternNameTypes @ First[split] /; MatchQ[split, {Except[""], _}]
-		]
 }
 
 
@@ -1137,12 +1184,17 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 					OptionValue["StringBoxToTypes"],
 					Automatic -> $stringBoxToTypes,
 					{0, 1}
-				]
+				] // Flatten
 			,
 			commentPlaceholder, boxesCommRepl, commPos, boxesComm, ignoredPos,
 			boxesClean, boxesCleanParsed, syntaxPosClean, syntaxPos
 		},
-		Function[{lhs, rhs}, stringBoxTypes[lhs] := rhs, HoldAll] @@@
+		Function[{lhs, rhs},
+			deafultStringBoxTypes[lhs] := rhs;
+			stringBoxTypes[lhs] := rhs
+			,
+			HoldAll
+		] @@@
 			stringBoxToTypes;
 		
 		boxesCommRepl =

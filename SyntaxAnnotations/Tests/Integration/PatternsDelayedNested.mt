@@ -247,6 +247,41 @@ Test[
 ]
 
 
+(* ::Subsubsection:: *)
+(*TagSetDelayed*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a:b:c_ /: b c := b_ c) ^:= (b:c) __a]
+	,
+	MakeBoxes[
+		(
+			RawBoxes@RowBox[{
+				SyntaxBox["a",
+					"LocalScopeConflict", "PatternVariable", "UndefinedSymbol"
+				],
+				":",
+				SyntaxBox["b", "UndefinedSymbol"],
+				":",
+				SyntaxBox["c_", "LocalScopeConflict", "PatternVariable"]
+			}] /:
+				SyntaxExpr[b, "UndefinedSymbol"] *
+				SyntaxExpr[c, "UndefinedSymbol"] :=
+					b_ *
+					SyntaxExpr[c, "PatternVariable", "UndefinedSymbol"]
+		) ^:=
+			RawBoxes@RowBox[{
+				SyntaxBox["b", "UndefinedSymbol"],
+				":",
+				SyntaxBox["c", "PatternVariable", "UndefinedSymbol"]
+			}] *
+			SyntaxExpr[__a, "PatternVariable"]
+	]
+	,
+	TestID -> "(a:b:c_ /: b c := b_ c) ^:= (b:c) __a"
+]
+
+
 (* ::Subsection:: *)
 (*TagSetDelayed*)
 

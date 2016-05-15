@@ -80,6 +80,10 @@ Test[
 (*UpSet*)
 
 
+(* ::Subsubsection:: *)
+(*UpSet*)
+
+
 Test[
 	AnnotateSyntax @ MakeBoxes[(a_ ^= a_) ^= a]
 	,
@@ -104,6 +108,28 @@ Test[
 	]
 	,
 	TestID -> "a ^= (a_ ^= a_)"
+]
+
+
+(* ::Subsubsection:: *)
+(*Rule*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a_ ^= (b:a -> a b_)]
+	,
+	MakeBoxes[
+		SyntaxExpr[a_, "PatternVariable"] ^= (
+			RawBoxes@RowBox[{
+				SyntaxBox["b", "PatternVariable", "UndefinedSymbol"],
+				":",
+				SyntaxBox["a", "UndefinedSymbol"]
+			}] ->
+				SyntaxExpr[a, "UndefinedSymbol"] * b_
+		)
+	]
+	,
+	TestID -> "a_ ^= (b:a -> a b_)"
 ]
 
 
