@@ -1180,7 +1180,8 @@ $stringBoxToTypes = {
 
 Options[AnnotateSyntax] = {
 	"Annotation" -> Automatic,
-	"StringBoxToTypes" -> Automatic
+	"StringBoxToTypes" -> Automatic,
+	"AnnotateComments" -> True
 }
 
 
@@ -1205,7 +1206,12 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 			boxes /. RowBox[{"(*", ___, "*)"}] -> commentPlaceholder;
 		commPos =
 			Position[boxesCommRepl, commentPlaceholder, {-1}, Heads -> False];
-		boxesComm = MapAt[annotation[#, {"Comment"}]&, boxes, commPos];
+		boxesComm =
+			If[TrueQ @ OptionValue["AnnotateComments"],
+				MapAt[annotation[#, {"Comment"}]&, boxes, commPos]
+			(* else *),
+				boxes
+			];
 		ignoredPos =
 			Join[
 				Position[boxesCommRepl,

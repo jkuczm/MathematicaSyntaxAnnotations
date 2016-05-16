@@ -25,6 +25,13 @@ Test[
 	,
 	TestID -> "Comment only: single word"
 ]
+Test[
+	AnnotateSyntax[RowBox[{"(*", "word", "*)"}], "AnnotateComments" -> False]
+	,
+	RowBox[{"(*", "word", "*)"}]
+	,
+	TestID -> "Comment only: single word: AnnotateComments -> False"
+]
 
 Test[
 	RowBox[{"(*", " ", "text", "   ", "\[IndentingNewLine]", "  \t", "*)"}] //
@@ -127,6 +134,36 @@ Test[
 	}]
 	,
 	TestID -> "Mixed: a_ \\[RuleDelayed] a"
+]
+Test[
+	AnnotateSyntax[
+		RowBox[{
+			RowBox[{"(*", " ", "a", "*)"}],
+			RowBox[{
+				"a_",
+				RowBox[{"(*", "*)"}],
+				"\[RuleDelayed]",
+				RowBox[{"(*", "\[IndentingNewLine]", "*)"}],
+				"a",
+				RowBox[{"(*", "word", "*)"}]
+			}]
+		}],
+		"AnnotateComments" -> False
+	]
+	,
+	RowBox[{
+		RowBox[{"(*", " ", "a", "*)"}],
+		RowBox[{
+			SyntaxBox["a_", "PatternVariable"],
+			RowBox[{"(*", "*)"}],
+			"\[RuleDelayed]",
+			RowBox[{"(*", "\[IndentingNewLine]", "*)"}],
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			RowBox[{"(*", "word", "*)"}]
+		}]
+	}]
+	,
+	TestID -> "Mixed: a_ \\[RuleDelayed] a: AnnotateComments -> False"
 ]
 
 Test[
