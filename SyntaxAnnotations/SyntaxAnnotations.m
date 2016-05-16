@@ -1200,13 +1200,6 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 			commentPlaceholder, boxesCommRepl, commPos, boxesComm, ignoredPos,
 			boxesClean, boxesCleanParsed, syntaxPosClean, syntaxPos
 		},
-		Function[{lhs, rhs},
-			deafultStringBoxTypes[lhs] := rhs;
-			stringBoxTypes[lhs] := rhs
-			,
-			HoldAll
-		] @@@
-			stringBoxToTypes;
 		
 		boxesCommRepl =
 			boxes /. RowBox[{"(*", ___, "*)"}] -> commentPlaceholder;
@@ -1225,7 +1218,17 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 		boxesClean = Delete[boxesCommRepl, ignoredPos];
 		If[{boxesClean} === {}, Return[boxesComm, Module]];
 		
-		boxesCleanParsed = parse["Main"][boxesClean];
+		Internal`InheritedBlock[{deafultStringBoxTypes, stringBoxTypes},
+			Function[{lhs, rhs},
+				deafultStringBoxTypes[lhs] := rhs;
+				stringBoxTypes[lhs] := rhs
+				,
+				HoldAll
+			] @@@
+				stringBoxToTypes;
+			boxesCleanParsed = parse["Main"][boxesClean]
+		];
+		
 		syntaxPosClean =
 			Position[boxesCleanParsed, _syntaxBox, Heads -> False];
 		syntaxPos =
