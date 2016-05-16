@@ -119,6 +119,56 @@ Test[
 
 
 (* ::Subsection:: *)
+(*RowBox: empty arguments*)
+
+
+Test[
+	extractArgs[RowBox[{","}], {1, Infinity}]
+	,
+	{"", ""}
+	,
+	TestID -> "RowBox: empty arguments: one comma: {1, Infinity}"
+]
+Test[
+	extractArgs[RowBox[{",", ","}], {1, Infinity}]
+	,
+	{"", "", ""}
+	,
+	TestID -> "RowBox: empty arguments: two commas: {1, Infinity}"
+]
+
+Test[
+	extractArgs[RowBox[{"a", ","}], {1, Infinity}]
+	,
+	{"a", ""}
+	,
+	TestID -> "RowBox: empty arguments: string, comma: {1, Infinity}"
+]
+Test[
+	extractArgs[RowBox[{",", "a"}], {1, Infinity}]
+	,
+	{"", "a"}
+	,
+	TestID -> "RowBox: empty arguments: comma, string: {1, Infinity}"
+]
+Test[
+	extractArgs[RowBox[{",", "a", ","}], {1, Infinity}]
+	,
+	{"", "a", ""}
+	,
+	TestID -> "RowBox: empty arguments: comma, string, comma: {1, Infinity}"
+]
+
+Test[
+	extractArgs[RowBox[{"a", ",", ",", "b"}], {1, Infinity}]
+	,
+	{"a", "", "b"}
+	,
+	TestID -> "RowBox: empty arguments: string, 2 commas, string: {1, Infinity}"
+]
+
+
+(* ::Subsection:: *)
 (*Complex*)
 
 
