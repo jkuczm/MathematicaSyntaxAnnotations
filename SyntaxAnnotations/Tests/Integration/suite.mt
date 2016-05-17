@@ -6,6 +6,7 @@ TestSuite[{
 	"PatternsDelayed.mt",
 	"PatternsDelayedNested.mt",
 	"Function.mt",
+	"FunctionNested.mt",
 	"Functions.mt",
 	"FunctionsNested.mt",
 	"Strings.mt",

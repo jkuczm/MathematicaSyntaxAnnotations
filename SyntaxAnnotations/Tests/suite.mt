@@ -12,6 +12,7 @@ TestSuite[{
 	"Integration/PatternsDelayed.mt",
 	"Integration/PatternsDelayedNested.mt",
 	"Integration/Function.mt",
+	"Integration/FunctionNested.mt",
 	"Integration/Functions.mt",
 	"Integration/FunctionsNested.mt",
 	"Integration/Strings.mt",

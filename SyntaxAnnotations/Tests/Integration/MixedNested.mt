@@ -15,50 +15,275 @@ Get["SyntaxAnnotations`Tests`Integration`init`"]
 
 
 (* ::Subsection:: *)
-(*Scoping in Functions*)
+(*Scoping*)
+
+
+(* ::Subsubsection:: *)
+(*Patterns*)
 
 
 Test[
-	Solve[With[{b}, a b], a] // MakeBoxes // AnnotateSyntax
+	With[{a}, a b_ -> a b] // MakeBoxes // AnnotateSyntax
 	,
-	Solve[
-		With[{SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
-			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]
-		]
-		,
+	With[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b_, "PatternVariable"] ->
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "With[{a}, a b_ -> a b]"
+]
+
+
+Test[
+	Block[{a}, a_ = a] // MakeBoxes // AnnotateSyntax
+	,
+	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a_, "FunctionLocalVariable", "PatternVariable"] =
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Block[{a}, a_ = a]"
+]
+
+
+Test[
+	Module[{a = (a -> a)}, a] // MakeBoxes // AnnotateSyntax
+	,
+	Module[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] = (
+				SyntaxExpr[a, "UndefinedSymbol"] ->
+					SyntaxExpr[a, "UndefinedSymbol"]
+			)
+		},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Module[{a = (a -> a)}, a]"
+]
+Test[
+	Block[{a = (a = a)}, a] // MakeBoxes // AnnotateSyntax
+	,
+	Block[
+		{
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] = (
+				SyntaxExpr[a, "UndefinedSymbol"] =
+					SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+			)
+		},
 		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
-	TestID -> "Solve[With[{b}, a b], a]"
+	TestID -> "Block[{a = (a = a)}, a]"
 ]
 
 
 Test[
-	Table[Module[{a}, a], {a, 0, 1}] // MakeBoxes // AnnotateSyntax
+	With[{a = (a -> Block[{b}, a b])}, a b] // MakeBoxes // AnnotateSyntax
 	,
-	Table[
-		Module[
-			{
-				SyntaxExpr[a,
-					"LocalVariable", "FunctionLocalVariable", "UndefinedSymbol"
-				]
-			}
-			,
-			SyntaxExpr[a,
-				"LocalVariable", "FunctionLocalVariable", "UndefinedSymbol"
-			]
-		]
-		,
-		{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"], 0, 1}
+	With[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] = (
+				SyntaxExpr[a, "UndefinedSymbol"] ->
+					Block[
+						{
+							SyntaxExpr[b,
+								"FunctionLocalVariable", "UndefinedSymbol"
+							]
+						},
+						SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+						SyntaxExpr[b,
+							"FunctionLocalVariable", "UndefinedSymbol"
+						]
+					]
+			)
+		},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
-	TestID -> "Table[Module[{a}, a], {a, 0, 1}]"
+	TestID -> "With[{a = (a -> Block[{b}, a b])}, a b]"
 ]
 
 
-(* ::Subsection:: *)
-(*Functions in Scoping*)
+(* ::Subsubsection:: *)
+(*Patterns Delayed*)
+
+
+Test[
+	Block[{a}, a b_ :> a b b_] // MakeBoxes // AnnotateSyntax
+	,
+	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b_, "PatternVariable"] :>
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b_, "LocalScopeConflict"]
+	] // MakeBoxes
+	,
+	TestID -> "Block[{a}, a b_ :> a b b_]"
+]
+
+
+Test[
+	Module[{a}, a_ := a a_] // MakeBoxes // AnnotateSyntax
+	,
+	Module[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
+		SyntaxExpr[a_, "LocalVariable", "PatternVariable"] :=
+			SyntaxExpr[a,
+				"LocalVariable", "PatternVariable", "UndefinedSymbol"
+			] *
+			SyntaxExpr[a_, "LocalVariable", "LocalScopeConflict"]
+	] // MakeBoxes
+	,
+	TestID -> "Module[{a}, a_ := a a_]"
+]
+
+
+Test[
+	Block[{a = (b_ := b)}, a b] // MakeBoxes // AnnotateSyntax
+	,
+	Block[
+		{
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] = (
+				SyntaxExpr[b_, "PatternVariable"] :=
+					SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+			)
+		},
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Block[{a = (b_ := b)}, a b]"
+]
+
+
+(* ::Subsubsection:: *)
+(*Function*)
+
+
+Test[
+	With[{a = (a #1) &}, a] // MakeBoxes // AnnotateSyntax
+	,
+	With[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] = (
+				SyntaxExpr[a, "UndefinedSymbol"] *
+				SyntaxExpr[#1, "PatternVariable"]
+			) &
+		},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "With[{a = Function[b, a]}, a b Function]"
+]
+
+
+Test[
+	Module[{a = Function[b, a]}, a b Function] // MakeBoxes // AnnotateSyntax
+	,
+	Module[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] =
+				Function[
+					SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"],
+					SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]
+				]
+		},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"] *
+		Function
+	] // MakeBoxes
+	,
+	TestID -> "Module[{a = Function[b, a]}, a b Function]"
+]
+
+
+Test[
+	Block[{a = RawBoxes@RowBox[{"a", "\[Function]", "a"}]}, a] //
+		MakeBoxes // AnnotateSyntax
+	,
+	Block[
+		{
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] =
+				RawBoxes@RowBox[{
+					SyntaxBox["a",
+						"FunctionLocalVariable", "PatternVariable",
+						"UndefinedSymbol"
+					],
+					"\[Function]",
+					SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+				}]
+		},
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Block[{a = a \\[Function] a}, a]"
+]
+Test[
+	With[{a = RawBoxes@RowBox[{"b", "\[Function]", "a"}]}, a b] //
+		MakeBoxes // AnnotateSyntax
+	,
+	With[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] =
+				RawBoxes@RowBox[{
+					SyntaxBox["b", "PatternVariable", "UndefinedSymbol"],
+					"\[Function]",
+					SyntaxBox["a", "UndefinedSymbol"]
+				}]
+		},
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Block[{a = b \\[Function] a}, a b]"
+]
+Test[
+	Module[
+		{
+			a =
+				RawBoxes@RowBox[
+					{"b", "\[Function]", Block[{b}, a b] // MakeBoxes}
+				]
+		},
+		a b
+	] // MakeBoxes // AnnotateSyntax
+	,
+	Module[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] =
+				RawBoxes@RowBox[{
+					SyntaxBox["b", "PatternVariable", "UndefinedSymbol"],
+					"\[Function]",
+					Block[
+						{
+							SyntaxExpr[b,
+								"PatternVariable", "FunctionLocalVariable",
+								"UndefinedSymbol"
+							]
+						},
+						SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+						SyntaxExpr[b,
+							"PatternVariable", "FunctionLocalVariable",
+							"UndefinedSymbol"
+						]
+					] // MakeBoxes
+				}]
+		}
+		,
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Module[{a = b \\[Function] Block[{b}, a b]}, a b]"
+]
+
+
+(* ::Subsubsection:: *)
+(*Functions*)
 
 
 Test[
@@ -86,16 +311,10 @@ Test[
 		{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]}
 		,
 		Limit[
-			SyntaxExpr[a,
-				"FunctionLocalVariable", "LocalVariable", "UndefinedSymbol"
-			]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 			,
-			SyntaxExpr[a,
-				"FunctionLocalVariable", "LocalVariable", "UndefinedSymbol"
-			] ->
-				SyntaxExpr[a,
-					"FunctionLocalVariable", "LocalVariable", "UndefinedSymbol"
-				]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
+				SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 		]
 	] // MakeBoxes
 	,
@@ -103,42 +322,135 @@ Test[
 ]
 
 
-(* ::Subsection:: *)
-(*Patterns in Functions*)
-
-
 Test[
-	Solve[a b_ -> a b, a] // MakeBoxes // AnnotateSyntax
+	Block[{a = Sum[a, {b, c, d}]}, a b c d] // MakeBoxes // AnnotateSyntax
 	,
-	Solve[
+	Block[
+		{
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] =
+				Sum[
+					SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+					{
+						SyntaxExpr[b,
+							"FunctionLocalVariable", "UndefinedSymbol"
+						],
+						SyntaxExpr[c, "UndefinedSymbol"],
+						SyntaxExpr[d, "UndefinedSymbol"]
+					}
+				]
+		},
 		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-		SyntaxExpr[b_, "PatternVariable"] ->
-			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			SyntaxExpr[b, "UndefinedSymbol"]
-		,
-		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+		SyntaxExpr[b, "UndefinedSymbol"] *
+		SyntaxExpr[c, "UndefinedSymbol"] *
+		SyntaxExpr[d, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
-	TestID -> "Solve[a b_ -> a b, a]"
+	TestID -> "Block[{a = Sum[a, {b, c, d}]}, a b c d]"
 ]
 
 
 Test[
-	Table[a_ = a, {a, 0, 1}] // MakeBoxes // AnnotateSyntax
+	Module[{a = a + Solve[a b, {b}]}, a b Solve] // MakeBoxes // AnnotateSyntax
 	,
-	Table[
-		SyntaxExpr[a_, "PatternVariable", "FunctionLocalVariable"] =
-			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+	Module[
+		{
+			SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] =
+				SyntaxExpr[a, "UndefinedSymbol"] +
+				Solve[
+					SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+					SyntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"]
+					,
+					{SyntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"]}
+				]
+		}
 		,
-		{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"], 0, 1}
+		SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"] *
+		Solve
 	] // MakeBoxes
 	,
-	TestID -> "Table[a_ = a, {a, 0, 1}]"
+	TestID -> "Module[{a = a + Solve[a b, {b}]}, a b Solve]"
 ]
 
 
 (* ::Subsection:: *)
-(*Functions in Patterns LHS*)
+(*Patterns*)
+
+
+(* ::Subsubsection:: *)
+(*Scoping*)
+
+
+Test[
+	(With[{a}, a b_] ^= a b) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		With[
+			{SyntaxExpr[a, "UndefinedSymbol"]},
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b_, "PatternVariable"]
+		] ^=
+			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
+	) // MakeBoxes
+	,
+	TestID -> "With[{a}, a b_] ^= a b"
+]
+
+
+Test[
+	(a /: Module[{a}, a] = a) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		SyntaxExpr[a, "UndefinedSymbol"] /:
+			Module[{SyntaxExpr[a, "UndefinedSymbol"]},
+				SyntaxExpr[a, "UndefinedSymbol"]
+			] = SyntaxExpr[a, "UndefinedSymbol"]
+	) // MakeBoxes
+	,
+	TestID -> "a /: Module[{a}, a] = a"
+]
+
+
+Test[
+	(a_ /: Block[{a_}, a_] = a_) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		SyntaxExpr[a_, "PatternVariable"] /:
+			Block[{SyntaxExpr[a_, "PatternVariable"]},
+				SyntaxExpr[a_, "PatternVariable"]
+			] = a_
+	) // MakeBoxes
+	,
+	TestID -> "a_ /: Block[{a_}, a_] = a_"
+]
+
+
+(* ::Subsubsection:: *)
+(*Patterns Delayed*)
+
+
+Test[
+	((a_ := Function[a, a_]) = a a_) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		(
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] :=
+				Function[
+					SyntaxExpr[a,
+						"LocalScopeConflict", "PatternVariable",
+						"UndefinedSymbol"
+					],
+					SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"]
+				]
+		) =
+			SyntaxExpr[a, "UndefinedSymbol"] a_
+	) // MakeBoxes
+	,
+	TestID -> "(a_ := Function[a, a_]) = a a_"
+]
+
+
+(* ::Subsubsection:: *)
+(*Functions*)
 
 
 Test[
@@ -188,8 +500,289 @@ Test[
 ]
 
 
+(* ::Subsubsection:: *)
+(*InfixMessageName*)
+
+
+Test[
+	RowBox[{RowBox[{"f", "::", "usage"}], "=", "\"\<something\>\""}] //
+		AnnotateSyntax
+	,
+	RowBox[{
+		RowBox[{
+			SyntaxBox["f", "UndefinedSymbol"],
+			"::",
+			SyntaxBox["usage", "String"]
+		}],
+		"=",
+		SyntaxBox["\"\<something\>\"", "String"]
+	}]
+	,
+	TestID -> "f::usage = \"something\""
+]
+
+
 (* ::Subsection:: *)
-(*Patterns Delayed in Functions*)
+(*Patterns Delayed*)
+
+
+(* ::Subsubsection:: *)
+(*Scoping*)
+
+
+Test[
+	(a_ ^:= With[{b}, a a_ b b_]) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		SyntaxExpr[a_, "PatternVariable"] ^:=
+			With[{SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
+				SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+				SyntaxExpr[a_, "LocalScopeConflict"] *
+				SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"] *
+				SyntaxExpr[b_, "LocalVariable"]
+			]
+	) // MakeBoxes
+	,
+	TestID -> "a_ ^:= With[{b}, a a_ b b_]"
+]
+
+
+Test[
+	(Module[{a}, a_ := Block[{a}, a a_]] := a) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		Module[{SyntaxExpr[a, "UndefinedSymbol"]},
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] :=
+				Block[
+					{
+						SyntaxExpr[a,
+							"LocalScopeConflict", "FunctionLocalVariable",
+							"UndefinedSymbol"
+						]
+					},
+					SyntaxExpr[a,
+						"LocalScopeConflict", "FunctionLocalVariable",
+						"UndefinedSymbol"
+					] *
+					SyntaxExpr[a_,
+						"LocalScopeConflict", "FunctionLocalVariable"
+					]
+				]
+		] :=
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	) // MakeBoxes
+	,
+	TestID -> "(Module[{a}, a_ := Block[{a}, a a_]] := a)"
+]
+
+
+Test[
+	(a /: a_ := Block[{a}, a a_]) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		SyntaxExpr[a, "UndefinedSymbol"] /:
+			SyntaxExpr[a_, "PatternVariable"] :=
+				Block[
+					{
+						SyntaxExpr[a,
+							"LocalScopeConflict", "FunctionLocalVariable",
+							"UndefinedSymbol"
+						]
+					}
+					,
+					SyntaxExpr[a,
+						"LocalScopeConflict", "FunctionLocalVariable",
+						"UndefinedSymbol"
+					] *
+					SyntaxExpr[a_,
+						"LocalScopeConflict", "FunctionLocalVariable"
+					]
+				]
+	) // MakeBoxes
+	,
+	TestID -> "a /: a_ := Block[{a}, a a_]"
+]
+
+
+(* ::Subsubsection:: *)
+(*Patterns Delayed*)
+
+
+Test[
+	((a_ := With[{a}, a a_]) := a) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		(
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] :=
+				With[
+					{
+						SyntaxExpr[a,
+							"LocalScopeConflict", "LocalVariable",
+							"UndefinedSymbol"
+						]
+					},
+					SyntaxExpr[a,
+						"LocalScopeConflict", "LocalVariable",
+						"UndefinedSymbol"
+					] *
+					SyntaxExpr[a_, "LocalScopeConflict", "LocalVariable"]
+				]
+		) :=
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	) // MakeBoxes
+	,
+	TestID -> "(a_ := With[{a}, a a_]) := a"
+]
+Test[
+	((a_ := Module[{b}, a a_ b b_]) := a) // MakeBoxes // AnnotateSyntax
+	,
+	(
+		(
+			SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] :=
+				Module[{SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
+					SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+					SyntaxExpr[a_, "LocalScopeConflict"] *
+					SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"] *
+					SyntaxExpr[b_, "LocalVariable"]
+				]
+		) :=
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	) // MakeBoxes
+	,
+	TestID -> "(a_ := Module[{b}, a a_ b b_]) := a"
+]
+
+
+(* ::Subsection:: *)
+(*Function*)
+
+
+(* ::Subsubsection:: *)
+(*Scoping*)
+
+
+Test[
+	Function[{a}, With[{b = a}, a b]] // MakeBoxes // AnnotateSyntax
+	,
+	Function[{SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]},
+		With[
+			{
+				SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"] =
+					SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+			},
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]
+		]
+	] // MakeBoxes
+	,
+	TestID -> "Function[{a}, With[{b = a}, a b]]"
+]
+
+
+(* ::Subsubsection:: *)
+(*Patterns Delayed*)
+
+
+Test[
+	Function[a, a_ :> a a_] // MakeBoxes // AnnotateSyntax
+	,
+	Function[
+		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+		,
+		SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] :>
+			SyntaxExpr[a,
+				"LocalScopeConflict", "PatternVariable", "UndefinedSymbol"
+			] *
+			SyntaxExpr[a_, "LocalScopeConflict"]
+	] // MakeBoxes
+	,
+	TestID -> "Function[a, a_ :> a a_]"
+]
+
+
+(* ::Subsection:: *)
+(*Functions*)
+
+
+(* ::Subsubsection:: *)
+(*Scoping*)
+
+
+Test[
+	Solve[With[{b}, a b], a] // MakeBoxes // AnnotateSyntax
+	,
+	Solve[
+		With[{SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]
+		]
+		,
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Solve[With[{b}, a b], a]"
+]
+
+
+Test[
+	Table[Module[{a}, a], {a, 0, 1}] // MakeBoxes // AnnotateSyntax
+	,
+	Table[
+		Module[
+			{
+				SyntaxExpr[a,
+					"LocalVariable", "FunctionLocalVariable", "UndefinedSymbol"
+				]
+			}
+			,
+			SyntaxExpr[a,
+				"LocalVariable", "FunctionLocalVariable", "UndefinedSymbol"
+			]
+		]
+		,
+		{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"], 0, 1}
+	] // MakeBoxes
+	,
+	TestID -> "Table[Module[{a}, a], {a, 0, 1}]"
+]
+
+
+(* ::Subsubsection:: *)
+(*Patterns*)
+
+
+Test[
+	Solve[a b_ -> a b, a] // MakeBoxes // AnnotateSyntax
+	,
+	Solve[
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[b_, "PatternVariable"] ->
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"]
+		,
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Solve[a b_ -> a b, a]"
+]
+
+
+Test[
+	Table[a_ = a, {a, 0, 1}] // MakeBoxes // AnnotateSyntax
+	,
+	Table[
+		SyntaxExpr[a_, "PatternVariable", "FunctionLocalVariable"] =
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+		,
+		{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"], 0, 1}
+	] // MakeBoxes
+	,
+	TestID -> "Table[a_ = a, {a, 0, 1}]"
+]
+
+
+(* ::Subsubsection:: *)
+(*Patterns Delayed*)
 
 
 Test[
@@ -226,8 +819,8 @@ Test[
 ]
 
 
-(* ::Subsection:: *)
-(*Functions in Patterns Delayed RHS*)
+(* ::Subsubsection:: *)
+(*Functions*)
 
 
 Test[
@@ -283,168 +876,8 @@ Test[
 ]
 
 
-(* ::Subsection:: *)
-(*Patterns in Scoping*)
-
-
-Test[
-	With[{a}, a b_ -> a b] // MakeBoxes // AnnotateSyntax
-	,
-	With[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		 SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
-		 SyntaxExpr[b_, "PatternVariable"] ->
-		 	SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"] *
-			SyntaxExpr[b, "UndefinedSymbol"]
-	] // MakeBoxes
-	,
-	TestID -> "With[{a}, a b_ -> a b]"
-]
-
-
-Test[
-	Block[{a}, a_ = a] // MakeBoxes // AnnotateSyntax
-	,
-	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
-		 SyntaxExpr[a_, "FunctionLocalVariable", "PatternVariable"] =
-		 	SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
-	] // MakeBoxes
-	,
-	TestID -> "Block[{a}, a_ = a]"
-]
-
-
-(* ::Subsection:: *)
-(*Scoping in Patterns LHS*)
-
-
-Test[
-	(With[{a}, a b_] ^= a b) // MakeBoxes // AnnotateSyntax
-	,
-	(
-		With[
-			{SyntaxExpr[a, "UndefinedSymbol"]},
-			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b_, "PatternVariable"]
-		] ^=
-			SyntaxExpr[a, "UndefinedSymbol"] SyntaxExpr[b, "UndefinedSymbol"]
-	) // MakeBoxes
-	,
-	TestID -> "With[{a}, a b_] ^= a b"
-]
-
-
-Test[
-	(a /: Module[{a}, a] = a) // MakeBoxes // AnnotateSyntax
-	,
-	(
-		SyntaxExpr[a, "UndefinedSymbol"] /:
-			Module[{SyntaxExpr[a, "UndefinedSymbol"]},
-				SyntaxExpr[a, "UndefinedSymbol"]
-			] = SyntaxExpr[a, "UndefinedSymbol"]
-	) // MakeBoxes
-	,
-	TestID -> "a /: Module[{a}, a] = a"
-]
-
-
-Test[
-	(a_ /: Block[{a_}, a_] = a_) // MakeBoxes // AnnotateSyntax
-	,
-	(
-		SyntaxExpr[a_, "PatternVariable"] /:
-			Block[{SyntaxExpr[a_, "PatternVariable"]},
-				SyntaxExpr[a_, "PatternVariable"]
-			] = a_
-	) // MakeBoxes
-	,
-	TestID -> "a_ /: Block[{a_}, a_] = a_"
-]
-
-
-(* ::Subsection:: *)
-(*Patterns Delayed in Scoping*)
-
-
-Test[
-	Block[{a}, a b_ :> a b b_] // MakeBoxes // AnnotateSyntax
-	,
-	Block[{SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]},
-		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-		SyntaxExpr[b_, "PatternVariable"] :>
-			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"] *
-			SyntaxExpr[b_, "LocalScopeConflict"]
-	] // MakeBoxes
-	,
-	TestID -> "Block[{a}, a b_ :> a b b_]"
-]
-
-
-Test[
-	Module[{a}, a_ := a a_] // MakeBoxes // AnnotateSyntax
-	,
-	Module[{SyntaxExpr[a, "LocalVariable", "UndefinedSymbol"]},
-		SyntaxExpr[a_, "LocalVariable", "PatternVariable"] :=
-			SyntaxExpr[a,
-				"LocalVariable", "PatternVariable", "UndefinedSymbol"
-			] *
-			SyntaxExpr[a_, "LocalVariable", "LocalScopeConflict"]
-	] // MakeBoxes
-	,
-	TestID -> "Module[{a}, a_ := a a_]"
-]
-
-
-(* ::Subsection:: *)
-(*Scoping in Patterns Delayed RHS*)
-
-
-Test[
-	(a_ ^:= With[{b}, a a_ b b_]) // MakeBoxes // AnnotateSyntax
-	,
-	(
-		SyntaxExpr[a_, "PatternVariable"] ^:=
-			With[{SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"]},
-				SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
-				SyntaxExpr[a_, "LocalScopeConflict"] *
-				SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"] *
-				SyntaxExpr[b_, "LocalVariable"]
-			]
-	) // MakeBoxes
-	,
-	TestID -> "a_ ^:= With[{b}, a a_ b b_]"
-]
-
-
-Test[
-	(a /: a_ := Block[{a}, a a_]) // MakeBoxes // AnnotateSyntax
-	,
-	(
-		SyntaxExpr[a, "UndefinedSymbol"] /:
-			SyntaxExpr[a_, "PatternVariable"] :=
-				Block[
-					{
-						SyntaxExpr[a,
-							"LocalScopeConflict", "FunctionLocalVariable",
-							"UndefinedSymbol"
-						]
-					}
-					,
-					SyntaxExpr[a,
-						"LocalScopeConflict", "FunctionLocalVariable",
-						"UndefinedSymbol"
-					] *
-					SyntaxExpr[a_,
-						"LocalScopeConflict", "FunctionLocalVariable"
-					]
-				]
-	) // MakeBoxes
-	,
-	TestID -> "a /: a_ := Block[{a}, a a_]"
-]
-
-
-(* ::Subsection:: *)
-(*String in Functions*)
+(* ::Subsubsection:: *)
+(*String*)
 
 
 Test[
@@ -471,29 +904,11 @@ Test[
 
 
 (* ::Subsection:: *)
-(*InfixMessageName in Patterns LHS, String in Patterns RHS*)
+(*InfixMessageName*)
 
 
-Test[
-	RowBox[{RowBox[{"f", "::", "usage"}], "=", "\"\<something\>\""}] //
-		AnnotateSyntax
-	,
-	RowBox[{
-		RowBox[{
-			SyntaxBox["f", "UndefinedSymbol"],
-			"::",
-			SyntaxBox["usage", "String"]
-		}],
-		"=",
-		SyntaxBox["\"\<something\>\"", "String"]
-	}]
-	,
-	TestID -> "f::usage = \"something\""
-]
-
-
-(* ::Subsection:: *)
-(*Scopping in InfixMessageName*)
+(* ::Subsubsection:: *)
+(*Scopping*)
 
 
 Test[
@@ -551,8 +966,37 @@ Test[
 ]
 
 
-(* ::Subsection:: *)
-(*Functions in InfixMessageName*)
+(* ::Subsubsection:: *)
+(*Patterns*)
+
+
+Test[
+	RowBox[{
+		"sym",
+		"::",
+		"msg",
+		"::",
+		"lang",
+		"::",
+		RowBox[{"x_", "->", "x"}]
+	}] // AnnotateSyntax
+	,
+	RowBox[{
+		SyntaxBox["sym", "UndefinedSymbol"],
+		"::",
+		SyntaxBox["msg", "String"],
+		"::",
+		SyntaxBox["lang", "String"],
+		SyntaxBox["::", "ExcessArgument"],
+		SyntaxBox[RowBox[{"x_", "->", "x"}], "ExcessArgument"]
+	}]
+	,
+	TestID -> "sym::msg::lang::x_->x"
+]
+
+
+(* ::Subsubsection:: *)
+(*Functions*)
 
 
 Test[
@@ -585,35 +1029,6 @@ Test[
 	}]
 	,
 	TestID -> "c::d::Sum[c d e f, {e, f}]"
-]
-
-
-(* ::Subsection:: *)
-(*Patterns in InfixMessageName*)
-
-
-Test[
-	RowBox[{
-		"sym",
-		"::",
-		"msg",
-		"::",
-		"lang",
-		"::",
-		RowBox[{"x_", "->", "x"}]
-	}] // AnnotateSyntax
-	,
-	RowBox[{
-		SyntaxBox["sym", "UndefinedSymbol"],
-		"::",
-		SyntaxBox["msg", "String"],
-		"::",
-		SyntaxBox["lang", "String"],
-		SyntaxBox["::", "ExcessArgument"],
-		SyntaxBox[RowBox[{"x_", "->", "x"}], "ExcessArgument"]
-	}]
-	,
-	TestID -> "sym::msg::lang::x_->x"
 ]
 
 
