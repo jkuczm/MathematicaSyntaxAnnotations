@@ -26,24 +26,24 @@ Test[
 	,
 	Table[
 		Table[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"] *
-			syntaxExpr[c, "UndefinedSymbol"] *
-			syntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[e, "UndefinedSymbol"] *
-			syntaxExpr[f, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"] *
+			SyntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[e, "UndefinedSymbol"] *
+			SyntaxExpr[f, "UndefinedSymbol"]
 			,
 			{
-				syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-				syntaxExpr[b, "UndefinedSymbol"],
-				syntaxExpr[c, "UndefinedSymbol"]
+				SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+				SyntaxExpr[b, "UndefinedSymbol"],
+				SyntaxExpr[c, "UndefinedSymbol"]
 			}
 		]
 		,
 		{
-			syntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[e, "UndefinedSymbol"],
-			syntaxExpr[f, "UndefinedSymbol"]
+			SyntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[e, "UndefinedSymbol"],
+			SyntaxExpr[f, "UndefinedSymbol"]
 		}
 	] // MakeBoxes
 	,
@@ -56,21 +56,21 @@ Test[
 	,
 	Table[
 		Table[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"] *
-			syntaxExpr[c, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"]
 			,
 			{
-				syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-				syntaxExpr[b, "UndefinedSymbol"],
-				syntaxExpr[c, "UndefinedSymbol"]
+				SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+				SyntaxExpr[b, "UndefinedSymbol"],
+				SyntaxExpr[c, "UndefinedSymbol"]
 			}
 		]
 		,
 		{
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[b, "UndefinedSymbol"],
-			syntaxExpr[c, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[b, "UndefinedSymbol"],
+			SyntaxExpr[c, "UndefinedSymbol"]
 		}
 	] // MakeBoxes
 	,
@@ -88,24 +88,24 @@ Test[
 	,
 	Plot[
 		Plot[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"] *
-			syntaxExpr[c, "UndefinedSymbol"] *
-			syntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[e, "UndefinedSymbol"] *
-			syntaxExpr[f, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"] *
+			SyntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[e, "UndefinedSymbol"] *
+			SyntaxExpr[f, "UndefinedSymbol"]
 			,
 			{
-				syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-				syntaxExpr[b, "UndefinedSymbol"],
-				syntaxExpr[c, "UndefinedSymbol"]
+				SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+				SyntaxExpr[b, "UndefinedSymbol"],
+				SyntaxExpr[c, "UndefinedSymbol"]
 			}
 		]
 		,
 		{
-			syntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[e, "UndefinedSymbol"],
-			syntaxExpr[f, "UndefinedSymbol"]
+			SyntaxExpr[d, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[e, "UndefinedSymbol"],
+			SyntaxExpr[f, "UndefinedSymbol"]
 		}
 	] // MakeBoxes
 	,
@@ -118,21 +118,21 @@ Test[
 	,
 	Plot[
 		Plot[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"] *
-			syntaxExpr[c, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"]
 			,
 			{
-				syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-				syntaxExpr[b, "UndefinedSymbol"],
-				syntaxExpr[c, "UndefinedSymbol"]
+				SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+				SyntaxExpr[b, "UndefinedSymbol"],
+				SyntaxExpr[c, "UndefinedSymbol"]
 			}
 		]
 		,
 		{
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[b, "UndefinedSymbol"],
-			syntaxExpr[c, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[b, "UndefinedSymbol"],
+			SyntaxExpr[c, "UndefinedSymbol"]
 		}
 	] // MakeBoxes
 	,
@@ -149,13 +149,13 @@ Test[
 	,
 	Solve[
 		Solve[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"]
 			,
-			syntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"]
+			SyntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"]
 		]
 		,
-		syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Solve[Solve[a b, b], a]"
@@ -167,11 +167,11 @@ Test[
 	,
 	Solve[
 		Solve[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 		]
 		,
-		syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Solve[Solve[a, a], a]"
@@ -187,17 +187,17 @@ Test[
 	,
 	Limit[
 		Limit[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"] *
-			syntaxExpr[c, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[d, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[d, "UndefinedSymbol"]
 			,
-			syntaxExpr[c, "FunctionLocalVariable", "UndefinedSymbol"] ->
-				syntaxExpr[d, "UndefinedSymbol"]
+			SyntaxExpr[c, "FunctionLocalVariable", "UndefinedSymbol"] ->
+				SyntaxExpr[d, "UndefinedSymbol"]
 		]
 		,
-		syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
-			syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
+			SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Limit[Limit[a b c d, c -> d], a -> b]"
@@ -209,15 +209,15 @@ Test[
 	,
 	Limit[
 		Limit[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"]
 			,
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
-				syntaxExpr[b, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
+				SyntaxExpr[b, "UndefinedSymbol"]
 		]
 		,
-		syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
-			syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
+			SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Limit[Limit[a b, a -> b], a -> b]"
@@ -233,18 +233,18 @@ Test[
 	,
 	Table[
 		Solve[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[c, "UndefinedSymbol"] *
-			syntaxExpr[d, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"] *
+			SyntaxExpr[d, "UndefinedSymbol"]
 			,
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"]
 		]
 		,
 		{
-			syntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[c, "UndefinedSymbol"],
-			syntaxExpr[d, "UndefinedSymbol"]
+			SyntaxExpr[b, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[c, "UndefinedSymbol"],
+			SyntaxExpr[d, "UndefinedSymbol"]
 		}
 	] // MakeBoxes
 	,
@@ -257,19 +257,19 @@ Test[
 	,
 	Limit[
 		Plot[
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
-			syntaxExpr[b, "UndefinedSymbol"] *
-			syntaxExpr[c, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"]
 			,
 		{
-			syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
-			syntaxExpr[b, "UndefinedSymbol"],
-			syntaxExpr[c, "UndefinedSymbol"]
+			SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"],
+			SyntaxExpr[b, "UndefinedSymbol"],
+			SyntaxExpr[c, "UndefinedSymbol"]
 		}
 		]
 		,
-		syntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
-			syntaxExpr[b, "UndefinedSymbol"]
+		SyntaxExpr[a, "FunctionLocalVariable", "UndefinedSymbol"] ->
+			SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
 	TestID -> "Limit[Plot[a b c, {a, b, c}], a -> b]"

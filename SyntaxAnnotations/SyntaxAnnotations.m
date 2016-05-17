@@ -18,29 +18,10 @@ returns boxes with certain subboxes wrapped with boxes identifying their \
 syntactic role."
 
 
-SyntaxBox::usage =
-"\
-SyntaxBox[boxes, {type1, subtype1, ...}, {type2, subtype2, ...}, ...] \
-represents boxes that in an expression perform sytnax roles of given types."
-
-
-NormalizeAnnotationTypes::usage =
-"\
-NormalizeAnnotationTypes[{type1, subtype1, ...}, {type2, subtype2, ...}, ...] \
-returns List of strings with names of dominating annotation types from given \
-sequence of annotation types."
-
-
 $BoxesToAnnotationTypes::usage =
 "\
 $BoxesToAnnotationTypes \
 is List of default rules converting boxes to annotation types."
-
-
-$SyntaxBoxToStyleBox::usage =
-"\
-$SyntaxBoxToStyleBox \
-is List of default rules used to transform syntax boxes to style boxes."
 
 
 (* ::Section:: *)
@@ -78,6 +59,12 @@ whitespaceQ::usage =
 whitespaceQ[\"str1\", \"str2\", ...] \
 returns True if given strings are empty or contain only whitespace or \
 \\[IndentingNewLine] characters, returns False otherwise."
+
+
+syntaxBox::usage =
+"\
+syntaxBox[boxes, {type1, subtype1, ...}, {type2, subtype2, ...}, ...] \
+represents boxes that in an expression perform sytnax roles of given types."
 
 
 extractSymbolName::usage =
@@ -123,7 +110,7 @@ returns List containing given boxes.\
 boxes don't need to represent valid mathematica expression. \
 Second argument of extractArgs accepts same values as second element of \
 \"LocalVariables\" property of SyntaxInformation with addition of 0. \
-All occurrences of SyntaxBox are stripped."
+All occurrences of syntaxBox are stripped."
 
 
 extendedSyntaxInformation::usage =
@@ -152,7 +139,7 @@ from argumentBoxes."
 annotateSyntaxInternal::usage =
 "\
 annotateSyntaxInternal[boxes, rules] \
-returns boxes with certain subboxes wrapped with SyntaxBox identifying their \
+returns boxes with certain subboxes wrapped with syntaxBox identifying their \
 syntactic role. Uses given rules as basis for assignment of syntactic roles \
 to subboxes."
 
@@ -164,6 +151,20 @@ returns position encoded in given \"position expression\" posExpr.\
 
 posExprPosition[posExpr, i] \
 returns position encoded in posExpr with last i elements droped."
+
+
+normalizeAnnotationTypes::usage =
+"\
+normalizeAnnotationTypes[{type1, subtype1, ...}, {type2, subtype2, ...}, ...] \
+returns List of strings with names of dominating annotation types from given \
+sequence of annotation types."
+
+
+syntaxStyleBox::usage =
+"\
+syntaxStyleBox[boxes, annotationTypes] \
+returns StyleBox containing given boxes with proper style for given List of \
+annotationTypes."
 
 
 (* ::Subsection:: *)
@@ -347,15 +348,15 @@ extractLocalVariableNames["PatternName"][boxes_] :=
 (*extractArgs*)
 
 
-extractArgs[SyntaxBox[arg_, __], spec_] := extractArgs[arg, spec]
+extractArgs[syntaxBox[arg_, __], spec_] := extractArgs[arg, spec]
 
-extractArgs[boxes_, 0] := {boxes} /. SyntaxBox[var_, __] :> var
+extractArgs[boxes_, 0] := {boxes} /. syntaxBox[var_, __] :> var
 
 extractArgs[arg_String, {min_, max_} /; min <= 1 <= max] := {arg}
 
 extractArgs[RowBox[argsBoxes:{___}], {min_Integer, max:_Integer|Infinity}] :=
 	Module[{args},
-		args = argsBoxes /. SyntaxBox[var_, __] :> var;
+		args = argsBoxes /. syntaxBox[var_, __] :> var;
 		args =
 			FixedPoint[
 				Replace[#,
@@ -455,7 +456,7 @@ withLocalVariables /: Verbatim[SetDelayed][
 
 annotateSyntaxInternal[str_String, rules_] :=
 	With[{types = ReplaceList[str, rules]},
-		SyntaxBox[str, Sequence @@ types] /; types =!= {}
+		syntaxBox[str, Sequence @@ types] /; types =!= {}
 	]
 
 annotateSyntaxInternal[boxes_?AtomQ, _] := boxes
@@ -468,12 +469,12 @@ annotateSyntaxInternal[
 ] :=
 	RowBox@Join[
 		annotateSyntaxInternal[#, rules] & /@ {sym},
-		{If[{sym} === {}, SyntaxBox["::", "SyntaxError"], "::"]},
-		SyntaxBox[#, "String"] & /@ {tag},
+		{If[{sym} === {}, syntaxBox["::", "SyntaxError"], "::"]},
+		syntaxBox[#, "String"] & /@ {tag},
 		{"::"},
-		SyntaxBox[#, "String"] & /@ {lang},
-		{SyntaxBox["::", "ExcessArgument"]},
-		SyntaxBox[#, "ExcessArgument"] & /@ {excess}
+		syntaxBox[#, "String"] & /@ {lang},
+		{syntaxBox["::", "ExcessArgument"]},
+		syntaxBox[#, "ExcessArgument"] & /@ {excess}
 	]
 
 annotateSyntaxInternal[
@@ -482,10 +483,10 @@ annotateSyntaxInternal[
 ] :=
 	RowBox@Join[
 		annotateSyntaxInternal[#, rules] & /@ {sym},
-		{If[{sym} === {}, SyntaxBox["::", "SyntaxError"], "::"]},
-		SyntaxBox[#, "String"] & /@ {tag},
-		{If[{lang} === {}, SyntaxBox["::", "SyntaxError"], "::"]},
-		SyntaxBox[#, "String"] & /@ {lang}
+		{If[{sym} === {}, syntaxBox["::", "SyntaxError"], "::"]},
+		syntaxBox[#, "String"] & /@ {tag},
+		{If[{lang} === {}, syntaxBox["::", "SyntaxError"], "::"]},
+		syntaxBox[#, "String"] & /@ {lang}
 	]
 
 annotateSyntaxInternal[RowBox[{sym___, "::", tag___}], rules_] :=
@@ -493,12 +494,12 @@ annotateSyntaxInternal[RowBox[{sym___, "::", tag___}], rules_] :=
 		annotateSyntaxInternal[#, rules] & /@ {sym},
 		{
 			If[{sym} === {} || {tag} === {},
-				SyntaxBox["::", "SyntaxError"]
+				syntaxBox["::", "SyntaxError"]
 			(* else *),
 				"::"
 			]
 		},
-		SyntaxBox[#, "String"] & /@ {tag}
+		syntaxBox[#, "String"] & /@ {tag}
 	]
 
 annotateSyntaxInternal[
@@ -749,10 +750,10 @@ posExprPosition[head_[___], i_] := posExprPosition[head, i + 1]
 
 
 (* ::Subsection:: *)
-(*NormalizeAnnotationTypes*)
+(*normalizeAnnotationTypes*)
 
 
-NormalizeAnnotationTypes[types___] :=
+normalizeAnnotationTypes[types___] :=
 	Module[{newTypes = {types}, localScopeConflict = False},
 		newTypes =
 			Replace[
@@ -822,23 +823,16 @@ NormalizeAnnotationTypes[types___] :=
 
 
 (* ::Subsection:: *)
-(*$SyntaxBoxToStyleBox*)
+(*syntaxStyleBox*)
 
 
-$SyntaxBoxToStyleBox = {
-	SyntaxBox[boxes_, types__] :>
-		With[{dominatingTypes = NormalizeAnnotationTypes[types]},
-			If[dominatingTypes === {},
-				boxes
-			(* else *),
-				StyleBox[
-					boxes,
-					CurrentValue[{AutoStyleOptions, # <> "Style"}]& /@
-						dominatingTypes
-				]
-			]
-		]
-	}
+syntaxStyleBox[boxes_, {}] := boxes
+
+syntaxStyleBox[boxes_, annotationTypes_] :=
+	StyleBox[
+		boxes,
+		CurrentValue[{AutoStyleOptions, # <> "Style"}]& /@ annotationTypes
+	]
 
 
 (* ::Subsection:: *)
@@ -846,14 +840,17 @@ $SyntaxBoxToStyleBox = {
 
 
 Options[AnnotateSyntax] = {
-	"BoxRules" :> $SyntaxBoxToStyleBox,
-	"BoxesToAnnoattiontypes" :> $BoxesToAnnotationTypes
+	"Annotation" -> Automatic,
+	"BoxesToAnnotationTypes" :> $BoxesToAnnotationTypes
 }
 
 
 AnnotateSyntax[boxes_, OptionsPattern[]] :=
 	Module[
 		{
+			annotation =
+				Replace[OptionValue["Annotation"], Automatic -> syntaxStyleBox]
+			,
 			commentPlaceholder, boxesCommRepl, commPos, boxesComm, ignoredPos,
 			boxesClean, boxesCleanParsed, syntaxPosClean, syntaxPos
 		},
@@ -861,7 +858,7 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 			boxes /. RowBox[{"(*", ___, "*)"}] -> commentPlaceholder;
 		commPos =
 			Position[boxesCommRepl, commentPlaceholder, {-1}, Heads -> False];
-		boxesComm = MapAt[SyntaxBox[#, "Comment"]&, boxes, commPos];
+		boxesComm = MapAt[annotation[#, {"Comment"}]&, boxes, commPos];
 		ignoredPos =
 			Join[
 				Position[boxesCommRepl,
@@ -877,10 +874,10 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 		boxesCleanParsed =
 			annotateSyntaxInternal[
 				boxesClean,
-				OptionValue["BoxesToAnnoattiontypes"]
+				OptionValue["BoxesToAnnotationTypes"]
 			];
 		syntaxPosClean =
-			Position[boxesCleanParsed, _SyntaxBox, Heads -> False];
+			Position[boxesCleanParsed, _syntaxBox, Heads -> False];
 		syntaxPos =
 			Extract[
 				Delete[
@@ -891,12 +888,15 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 				posExprPosition
 			];
 		ReplacePart[boxesComm,
-			MapThread[{#1} -> ReplacePart[#2, 1 -> #3] &, {
-				syntaxPos,
-				Extract[boxesCleanParsed, syntaxPosClean],
-				Extract[boxes, syntaxPos]
-			}]
-		] /. OptionValue["BoxRules"]
+			MapThread[
+				{#1} -> annotation[#3, normalizeAnnotationTypes @@ Rest[#2]] &,
+				{
+					syntaxPos,
+					Extract[boxesCleanParsed, syntaxPosClean],
+					Extract[boxes, syntaxPos]
+				}
+			]
+		]
 	]
 
 

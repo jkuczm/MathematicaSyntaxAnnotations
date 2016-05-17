@@ -51,36 +51,36 @@ Test[
 
 
 (* ::Subsection:: *)
-(*SyntaxBox*)
+(*syntaxBox*)
 
 
 Test[
-	extractArgs[SyntaxBox["a", type], {1}]
+	extractArgs[syntaxBox["a", type], {1}]
 	,
 	{"a"}
 	,
-	TestID -> "SyntaxBox: {1}"
+	TestID -> "syntaxBox: {1}"
 ]
 Test[
-	extractArgs[SyntaxBox["a", type], {1, 2}]
+	extractArgs[syntaxBox["a", type], {1, 2}]
 	,
 	{"a"}
 	,
-	TestID -> "SyntaxBox: {1, 2}"
+	TestID -> "syntaxBox: {1, 2}"
 ]
 Test[
-	extractArgs[SyntaxBox["a", type], {2, Infinity}]
+	extractArgs[syntaxBox["a", type], {2, Infinity}]
 	,
 	{}
 	,
-	TestID -> "SyntaxBox: {2, Infinity}"
+	TestID -> "syntaxBox: {2, Infinity}"
 ]
 Test[
-	extractArgs[SyntaxBox["a", type], 0]
+	extractArgs[syntaxBox["a", type], 0]
 	,
 	{"a"}
 	,
-	TestID -> "SyntaxBox: 0"
+	TestID -> "syntaxBox: 0"
 ]
 
 
@@ -125,7 +125,7 @@ Test[
 Test[
 	extractArgs[
 		RowBox[{
-			SyntaxBox["c", "Undefined"], ",",
+			syntaxBox["c", "Undefined"], ",",
 			RowBox[{"x", "=", "y"}], ",",
 			"e"
 		}],
@@ -139,7 +139,7 @@ Test[
 Test[
 	extractArgs[
 		RowBox[{
-			SyntaxBox["c", "Undefined"], ",",
+			syntaxBox["c", "Undefined"], ",",
 			RowBox[{"x", "=", "y"}], ",",
 			"e"
 		}],
@@ -153,7 +153,7 @@ Test[
 Test[
 	extractArgs[
 		RowBox[{
-			SyntaxBox["c", "Undefined"], ",",
+			syntaxBox["c", "Undefined"], ",",
 			RowBox[{"x", "=", "y"}], ",",
 			"e"
 		}],
@@ -167,7 +167,7 @@ Test[
 Test[
 	extractArgs[
 		RowBox[{
-			SyntaxBox["c", "Undefined"], ",",
+			syntaxBox["c", "Undefined"], ",",
 			RowBox[{"x", "=", "y"}], ",",
 			"e"
 		}],
