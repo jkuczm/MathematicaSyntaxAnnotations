@@ -215,11 +215,16 @@ SetAttributes[undefinedSymbolQ, HoldFirst]
 
 
 undefinedSymbolQ[
-	sym : _String | _Symbol /;
-		Quiet[Context[sym], Context::notfound] === "System`"
-] := False
+	s : _String | _Symbol /; Quiet[Context[s], Context::notfound] === "System`"
+] = False
 
-undefinedSymbolQ[sym : _String?symbolNameQ | _Symbol] :=
+undefinedSymbolQ[name_String /; StringFreeQ[name, WhitespaceCharacter]] :=
+	With[{heldSym = Quiet @ MakeExpression[name, StandardForm]},
+		undefinedSymbolQ @@ heldSym /;
+			MatchQ[heldSym, HoldComplete[Except[Null | Symbol[___], _Symbol]]]
+	]
+
+undefinedSymbolQ[sym_Symbol] :=
 	! MemberQ[Language`ExtendedDefinition[sym][[1, 2, ;; -2, 2]], Except[{}]]
 
 undefinedSymbolQ[_] = False
