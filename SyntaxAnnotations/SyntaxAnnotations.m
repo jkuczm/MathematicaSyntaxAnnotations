@@ -424,7 +424,10 @@ extendedSyntaxInformation[symName_String] :=
 (*$BoxesToAnnotationTypes*)
 
 
-$BoxesToAnnotationTypes = {_String?undefinedSymbolQ -> {"UndefinedSymbol"}}
+$BoxesToAnnotationTypes = {
+	str_String /; StringMatchQ[str, "\"*\""] -> {"String"},
+	_String?undefinedSymbolQ -> {"UndefinedSymbol"}
+}
 
 
 (* ::Subsection:: *)
