@@ -470,6 +470,131 @@ Test[
 ]
 
 
+(* ::Subsection:: *)
+(*Scopping in InfixMessageName*)
+
+
+Test[
+	RowBox[{
+		RowBox[{"Module", "[", RowBox[{
+			RowBox[{"{", "a", "}"}],
+			",",
+			"a"
+		}], "]"}],
+		"::",
+		"a"
+	}] // AnnotateSyntax
+	,
+	RowBox[{
+		RowBox[{"Module", "[", RowBox[{
+			RowBox[{"{",
+				SyntaxBox["a", "LocalVariable", "UndefinedSymbol"],
+			"}"}],
+			",",
+			SyntaxBox["a", "LocalVariable", "UndefinedSymbol"]
+		}], "]"}],
+		"::",
+		SyntaxBox["a", "String"]
+	}]
+	,
+	TestID -> "Module[{a}, a]::a"
+]
+
+Test[
+	RowBox[{
+		"b",
+		"::",
+		RowBox[{"With", "[", RowBox[{
+			RowBox[{"{", RowBox[{"b", "=", "b"}], "}"}],
+			",",
+			"b"
+		}], "]"}]
+	}] // AnnotateSyntax
+	,
+	RowBox[{
+		SyntaxBox["b", "UndefinedSymbol"],
+		"::",
+		SyntaxBox[
+			RowBox[{"With", "[", RowBox[{
+				RowBox[{"{", RowBox[{"b", "=", "b"}], "}"}],
+				",",
+				"b"
+			}], "]"}]
+			,
+			"String"
+		]
+	}]
+	,
+	TestID -> "b::With[{b = b}, b]"
+]
+
+
+(* ::Subsection:: *)
+(*Functions in InfixMessageName*)
+
+
+Test[
+	RowBox[{
+		"c",
+		"::",
+		"d",
+		"::",
+		RowBox[{"Sum", "[", RowBox[{
+			RowBox[{"c", " ", "d", " ", "e", " ", "f"}],
+			",",
+			RowBox[{"{", RowBox[{"e", ",", "f"}], "}"}]
+		}], "]"}]
+	}] // AnnotateSyntax
+	,
+	RowBox[{
+		SyntaxBox["c", "UndefinedSymbol"],
+		"::",
+		SyntaxBox["d", "String"],
+		"::",
+		SyntaxBox[
+			RowBox[{"Sum", "[", RowBox[{
+				RowBox[{"c", " ", "d", " ", "e", " ", "f"}],
+				",",
+				RowBox[{"{", RowBox[{"e", ",", "f"}], "}"}]
+			}], "]"}]
+			,
+			"String"
+		]
+	}]
+	,
+	TestID -> "c::d::Sum[c d e f, {e, f}]"
+]
+
+
+(* ::Subsection:: *)
+(*Patterns in InfixMessageName*)
+
+
+Test[
+	RowBox[{
+		"sym",
+		"::",
+		"msg",
+		"::",
+		"lang",
+		"::",
+		RowBox[{"x_", "->", "x"}]
+	}] // AnnotateSyntax
+	,
+	RowBox[{
+		SyntaxBox["sym", "UndefinedSymbol"],
+		"::",
+		SyntaxBox["msg", "String"],
+		"::",
+		SyntaxBox["lang", "String"],
+		SyntaxBox["::", "ExcessArgument"],
+		SyntaxBox[RowBox[{"x_", "->", "x"}], "ExcessArgument"]
+	}]
+	,
+	TestID -> "sym::msg::lang::x_->x"
+]
+
+
 (* ::Section:: *)
 (*TearDown*)
 
