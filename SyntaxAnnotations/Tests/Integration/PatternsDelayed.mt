@@ -478,6 +478,20 @@ Test[
 	,
 	TestID -> "a b /: a_ b_ := a b"
 ]
+Test[
+	AnnotateSyntax @ MakeBoxes[\[Alpha] b /: \[Alpha]_ b_ := \[Alpha] b]
+	,
+	MakeBoxes[
+		SyntaxExpr[\[Alpha], "UndefinedSymbol"] *
+		SyntaxExpr[b, "UndefinedSymbol"] /:
+			SyntaxExpr[\[Alpha]_, "PatternVariable"] *
+			SyntaxExpr[b_, "PatternVariable"] :=
+				SyntaxExpr[\[Alpha], "PatternVariable", "UndefinedSymbol"] *
+				SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "\\[Alpha] b /: \\[Alpha]_ b_ := \\[Alpha] b"
+]
 
 
 Test[
