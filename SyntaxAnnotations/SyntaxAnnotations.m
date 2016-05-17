@@ -461,18 +461,29 @@ extractArgs[boxes_, 0] := {boxes} /. syntaxBox[var_, _] :> var
 extractArgs[arg_String, {min_, max_} /; min <= 1 <= max] := {arg}
 
 extractArgs[RowBox[argsBoxes:{___}], {min_Integer, max:_Integer|Infinity}] :=
-	Module[{args},
+	Module[{args, $previousComma = True},
 		args = argsBoxes /. syntaxBox[var_, _] :> var;
+		(*	It's possible that RowBox contains adjacent comma strings, or comma
+			string as first or last element. Such boxes are parsed, the same as
+			if there was empty or whitespace only String between commas, to
+			expression with Null argument betwenn commas, or before/after comma
+			if it is first/last in row. To take this into account in arguments
+			counting, we put empty strings in relevant places. *)
 		args =
-			FixedPoint[
-				Replace[#,
-					{l___, PatternSequence[",", ","], r___} :>
-						{l, ",", "", ",", r}
-				]&
-				,
-				args
-			];
-		args = DeleteCases[args, ","];
+			Replace[args, {
+				"," :>
+					If[$previousComma,
+						$previousComma = True;
+						""
+					(* else *),
+						$previousComma = True;
+						Unevaluated@Sequence[]
+					],
+				x_ :> ($previousComma = False; x)
+			}, {1}];
+		If[$previousComma,
+			AppendTo[args, ""]
+		];
 		Take[args, {Max[1, min], Min[Length[args], max]}]
 	]
 
