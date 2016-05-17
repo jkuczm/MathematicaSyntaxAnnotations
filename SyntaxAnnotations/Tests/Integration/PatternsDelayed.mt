@@ -222,6 +222,38 @@ Test[
 
 
 Test[
+	AnnotateSyntax @ MakeBoxes[a_ :> a:b]
+	,
+	MakeBoxes[
+		SyntaxExpr[a_, "PatternVariable"] :>
+			RawBoxes@RowBox[{
+				SyntaxBox["a", "LocalScopeConflict", "UndefinedSymbol"],
+				":",
+				SyntaxBox["b", "UndefinedSymbol"]
+			}]
+	]
+	,
+	TestID -> "a_ :> a:b"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a_ :> b:a]
+	,
+	MakeBoxes[
+		SyntaxExpr[a_, "PatternVariable"] :>
+			RawBoxes@RowBox[{
+				SyntaxBox["b", "UndefinedSymbol"],
+				":",
+				SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+			}]
+	]
+	,
+	TestID -> "a_ :> b:a"
+]
+
+
+Test[
 	AnnotateSyntax @ MakeBoxes[a_ b_ :> a b]
 	,
 	MakeBoxes[
@@ -243,6 +275,102 @@ Test[
 	]
 	,
 	TestID -> "a_ a :> a"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a:a :> a]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "UndefinedSymbol"]
+		}] :>
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a:a :> a"
+]
+Test[
+	AnnotateSyntax @ MakeBoxes[a:a :> a__]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "UndefinedSymbol"]
+		}] :>
+			SyntaxExpr[a__, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "a:a :> a"
+]
+Test[
+	AnnotateSyntax @ MakeBoxes[a:b :> a b]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["b", "UndefinedSymbol"]
+		}] :>
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a:b :> a b"
+]
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a:a:a :> a]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "UndefinedSymbol"]
+		}] :>
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a:a:a :> a"
+]
+Test[
+	AnnotateSyntax @ MakeBoxes[a:b:c :> a b c]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["b", "UndefinedSymbol"],
+			":",
+			SyntaxBox["c", "UndefinedSymbol"]
+		}] :>
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "UndefinedSymbol"] *
+			SyntaxExpr[c, "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a:b:c :> a b c"
+]
+Test[
+	AnnotateSyntax @ MakeBoxes[a:b:c :> a_ b__ c___]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["b", "UndefinedSymbol"],
+			":",
+			SyntaxBox["c", "UndefinedSymbol"]
+		}] :>
+			SyntaxExpr[a_, "LocalScopeConflict"] b__ c___
+	]
+	,
+	TestID -> "a:b:c :> a b c"
 ]
 
 
@@ -283,6 +411,18 @@ Test[
 
 
 Test[
+	AnnotateSyntax @ MakeBoxes[a_ := a_]
+	,
+	MakeBoxes[
+		SyntaxExpr[a_, "PatternVariable"] :=
+			SyntaxExpr[a_, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "a_ := a"
+]
+
+
+Test[
 	AnnotateSyntax @ MakeBoxes[a_ b_ := a b]
 	,
 	MakeBoxes[
@@ -292,6 +432,26 @@ Test[
 	]
 	,
 	TestID -> "a_ b_ := a b"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a:a := a:a]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "UndefinedSymbol"]
+		}] :=
+			RawBoxes@RowBox[{
+				SyntaxBox["a", "LocalScopeConflict", "UndefinedSymbol"],
+				":",
+				SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+			}]
+	]
+	,
+	TestID -> "a:a := a:a"
 ]
 
 
@@ -341,6 +501,30 @@ Test[
 	]
 	,
 	TestID -> "a_ b_ ^:= a b"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a:b:c) a ^:= (a:b) c_]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["b", "UndefinedSymbol"],
+			":",
+			SyntaxBox["c", "UndefinedSymbol"]
+		}] *
+		SyntaxExpr[a, "UndefinedSymbol"] ^:=
+			RawBoxes@RowBox[{
+				SyntaxBox["a", "LocalScopeConflict", "UndefinedSymbol"],
+				":",
+				SyntaxBox["b", "UndefinedSymbol"]
+			}] *
+			c_
+	]
+	,
+	TestID -> "(a:b:c) a ^:= (a:b) c_"
 ]
 
 
@@ -421,6 +605,27 @@ Test[
 	]
 	,
 	TestID -> "a_ /: a := a_"
+]
+Test[
+	AnnotateSyntax @ MakeBoxes[a:a /: a := a:a:a_]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "UndefinedSymbol"]
+		}] /:
+			SyntaxExpr[a, "UndefinedSymbol"] :=
+				RawBoxes@RowBox[{
+					SyntaxBox["a", "LocalScopeConflict", "UndefinedSymbol"],
+					":",
+					SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+					":",
+					SyntaxBox["a_", "LocalScopeConflict"]
+				}]
+	]
+	,
+	TestID -> "a:a /: a := a_:a:a"
 ]
 
 

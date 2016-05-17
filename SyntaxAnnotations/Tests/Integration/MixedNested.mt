@@ -108,6 +108,28 @@ Test[
 ]
 
 
+Test[
+	Module[{a:b -> c}, a b c] // MakeBoxes // AnnotateSyntax
+	,
+	Module[
+		{
+			RawBoxes@RowBox[{
+				SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+				":",
+				SyntaxBox["b", "LocalVariable", "UndefinedSymbol"]
+			}] ->
+				SyntaxExpr[c, "LocalVariable", "UndefinedSymbol"]
+		}
+		,
+		SyntaxExpr[a, "UndefinedSymbol"] *
+		SyntaxExpr[b, "LocalVariable", "UndefinedSymbol"] *
+		SyntaxExpr[c, "LocalVariable", "UndefinedSymbol"]
+	] // MakeBoxes
+	,
+	TestID -> "Module[{a:b -> c}, a b c]"
+]
+
+
 (* ::Subsubsection:: *)
 (*Patterns Delayed*)
 
