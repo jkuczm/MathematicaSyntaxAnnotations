@@ -3,5 +3,6 @@ TestSuite[{
 	"symbolNameQ.mt",
 	"whitespaceQ.mt",
 	"extractSymbolName.mt",
-	"extractArgs.mt"
+	"extractArgs.mt",
+	"AnnotateSyntax.mt"
 }]
