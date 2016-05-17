@@ -73,6 +73,14 @@ Test[
 ]
 
 Test[
+	symbolNameQ["b "]
+	,
+	False
+	,
+	TestID -> "single letter with witespace"
+]
+
+Test[
 	symbolNameQ["c3"]
 	,
 	True
@@ -213,7 +221,21 @@ Block[
 		,
 		HoldPattern[a]
 		,
-		TestID -> "evaluation leak"
+		TestID -> "evaluation leak: not symbol name"
+	]
+]
+Block[
+	{a, b, c}
+	,
+	a := (b = c);
+	symbolNameQ["a"];
+	
+	TestMatch[
+		b
+		,
+		HoldPattern[b]
+		,
+		TestID -> "evaluation leak: valid symbol name"
 	]
 ]
 
@@ -243,12 +265,51 @@ Test[
 ]
 
 
+Test[
+	symbolNameQ["Symbol[]"]
+	,
+	False
+	,
+	TestID -> "Symbol function call: 0 args"
+]
+Test[
+	symbolNameQ["Symbol[\"a\"]"]
+	,
+	False
+	,
+	TestID -> "Symbol function call: 1 arg"
+]
+Test[
+	symbolNameQ["Symbol[\"a\", b]"]
+	,
+	False
+	,
+	TestID -> "Symbol function call: 2 args"
+]
+
+
+Test[
+	symbolNameQ["SyntaxAnnotations`Tests`Unit`symbolNameQ`tmp`a"]
+	,
+	True
+	,
+	TestID -> "Symbol with explicit context: full context"
+]
+Test[
+	symbolNameQ["`tmp`b"]
+	,
+	True
+	,
+	TestID -> "Symbol with explicit context: subcontext of current context"
+]
+
+
 (* ::Section:: *)
 (*TearDown*)
 
 
-Unprotect["`*"]
-Quiet[Remove["`*"], {Remove::rmnsm}]
+Unprotect["`*", "`*`*"]
+Quiet[Remove["`*", "`*`*"], {Remove::rmnsm}]
 
 
 EndPackage[]
