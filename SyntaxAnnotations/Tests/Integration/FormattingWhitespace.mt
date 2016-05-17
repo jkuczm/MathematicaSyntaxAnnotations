@@ -17,6 +17,22 @@ Get["SyntaxAnnotations`Tests`Integration`init`"]
 
 
 Test[
+	" \t\n\[IndentingNewLine]" // AnnotateSyntax
+	,
+	" \t\n\[IndentingNewLine]"
+	,
+	TestID -> "whitespace"
+]
+Test[
+	RowBox[{"\n", " ", "\[IndentingNewLine]", "\t"}] // AnnotateSyntax
+	,
+	RowBox[{"\n", " ", "\[IndentingNewLine]", "\t"}]
+	,
+	TestID -> "whitespace only RowBox"
+]
+
+
+Test[
 	RowBox[{
 		"\t", "a_", "\[IndentingNewLine]",
 			"/:", "\n\t",
@@ -55,7 +71,7 @@ Test[
 			SyntaxBox["a", "UndefinedSymbol"], "\n"
 	}]
 	,
-	TestID -> "a_ :> a"
+	TestID -> "a_ -> a"
 ]
 
 
@@ -130,7 +146,7 @@ Test[
 
 Test[
 	RowBox[{
-		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t" RowBox[{
+		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t", RowBox[{
 			"\n", "a", ",", " ", "b", " "
 		}], "", "}", "\t\n"}],
 		" ", "\[Function]", " \[IndentingNewLine]",
@@ -138,7 +154,7 @@ Test[
 	}] // AnnotateSyntax
 	,
 	RowBox[{
-		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t" RowBox[{
+		"\n", RowBox[{"\[IndentingNewLine]", "{", "\t", RowBox[{
 			"\n", SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
 			",", " ",
 			SyntaxBox["b", "PatternVariable", "UndefinedSymbol"], " "

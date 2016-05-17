@@ -18,5 +18,6 @@ TestSuite[{
 	"Integration/InfixMessageName.mt",
 	"Integration/MixedNested.mt",
 	"Integration/InputFormBoxes.mt",
-	"Integration/FormattingWhitespace.mt"
+	"Integration/FormattingWhitespace.mt",
+	"Integration/Comments.mt"
 }]
