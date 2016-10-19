@@ -50,6 +50,15 @@ Module[
 ]
 
 
+Test[
+	Attributes@AnnotateSyntax
+	,
+	{Protected}
+	,
+	TestID -> "Attributes"
+]
+
+
 (* ::Section:: *)
 (*TearDown*)
 
