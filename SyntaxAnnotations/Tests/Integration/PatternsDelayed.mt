@@ -304,7 +304,7 @@ Test[
 			SyntaxExpr[a__, "LocalScopeConflict"]
 	]
 	,
-	TestID -> "a:a :> a"
+	TestID -> "a:a :> a__"
 ]
 Test[
 	AnnotateSyntax @ MakeBoxes[a:b :> a b]
@@ -370,7 +370,7 @@ Test[
 			SyntaxExpr[a_, "LocalScopeConflict"] b__ c___
 	]
 	,
-	TestID -> "a:b:c :> a b c"
+	TestID -> "a:b:c :> a_ b__ c___"
 ]
 
 
@@ -418,7 +418,7 @@ Test[
 			SyntaxExpr[a_, "LocalScopeConflict"]
 	]
 	,
-	TestID -> "a_ := a"
+	TestID -> "a_ := a_"
 ]
 
 

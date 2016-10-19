@@ -710,7 +710,7 @@ Test[
 				SyntaxExpr[d, "UndefinedSymbol"]
 	]
 	,
-	TestID -> "a:b:c = a b c"
+	TestID -> "a:b:c /: d = a b c d"
 ]
 
 

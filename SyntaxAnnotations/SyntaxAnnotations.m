@@ -1,4 +1,4 @@
-﻿(* ::Package:: *)
+(* ::Package:: *)
 
 BeginPackage["SyntaxAnnotations`"]
 
