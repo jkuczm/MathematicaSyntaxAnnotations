@@ -105,6 +105,27 @@ Test[
 ]
 
 
+(* ::Subsubsection:: *)
+(*Condition*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ /; a a_) :> a a_]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] /;
+		 		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 		SyntaxExpr[a_, "PatternVariable"]
+		 ) :>
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[a_, "LocalScopeConflict"]
+	]
+	,
+	TestID -> "(a_ /; a a_) :> a a_"
+]
+
+
 (* ::Subsection:: *)
 (*SetDelayed*)
 
@@ -171,6 +192,26 @@ Test[
 	]
 	,
 	TestID -> "(a_ := a_) := a a_"
+]
+
+
+(* ::Subsubsection:: *)
+(*Condition*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a_ := (a a_ /; a a_)]
+	,
+	MakeBoxes[
+		 SyntaxExpr[a_, "PatternVariable"] := (
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"] /;
+		 		SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 		SyntaxExpr[a_, "LocalScopeConflict", "PatternVariable"]
+		 )
+	]
+	,
+	TestID -> "a_ := (a a_ /; a a_)"
 ]
 
 
@@ -369,6 +410,74 @@ Test[
 	]
 	,
 	TestID -> "a /: a_ := (a := a_)"
+]
+
+
+(* ::Subsection:: *)
+(*Condition*)
+
+
+(* ::Subsubsection:: *)
+(*RuleDelayed*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ :> b_) /; a b]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] :>
+		 		SyntaxExpr[b_, "PatternVariable"]
+		 ) /;
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "(a_ :> b_) /; a b"
+]
+
+
+(* ::Subsubsection:: *)
+(*Condition*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ /; b_) /; a b]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] /;
+		 		SyntaxExpr[b_, "PatternVariable"]
+		 ) /;
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "(a_ /; b_) /; a b"
+]
+
+
+(* ::Subsubsection:: *)
+(*SetDelayed*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[(a_ c_ := b_ c c_) /; a b c]
+	,
+	MakeBoxes[
+		 (
+		 	SyntaxExpr[a_, "PatternVariable"] *
+		 	SyntaxExpr[c_, "PatternVariable"] :=
+		 		b_ *
+		 		SyntaxExpr[c, "PatternVariable", "UndefinedSymbol"]*
+		 		SyntaxExpr[c_, "PatternVariable", "LocalScopeConflict"]
+		 ) /;
+		 	SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+		 	SyntaxExpr[b, "UndefinedSymbol"] *
+		 	SyntaxExpr[c, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "(a_ c_ := b_ c c_) /; a b c"
 ]
 
 
