@@ -291,7 +291,10 @@ undefinedSymbolQ[name_String /; StringFreeQ[name, WhitespaceCharacter]] :=
 	]
 
 undefinedSymbolQ[sym_Symbol] :=
-	! MemberQ[Language`ExtendedDefinition[sym][[1, 2, ;; -2, 2]], Except[{}]]
+	And @@ (#@sym === {}& /@ {
+		OwnValues, SubValues, UpValues, DownValues, NValues, FormatValues,
+		DefaultValues, Messages
+	})
 
 undefinedSymbolQ[_] = False
 
