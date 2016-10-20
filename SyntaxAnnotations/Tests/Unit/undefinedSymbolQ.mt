@@ -26,13 +26,28 @@ Block[{a},
 		,
 		TestID -> "own value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["a"]
 		,
 		False
 		,
 		TestID -> "own value: String"
+	];
+	
+	SetAttributes[a, ReadProtected];
+	Test[
+		undefinedSymbolQ[a]
+		,
+		False
+		,
+		TestID -> "own value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["a"]
+		,
+		False
+		,
+		TestID -> "own value: ReadProtected: String"
 	]
 ]
 
@@ -46,13 +61,28 @@ Block[{b},
 		,
 		TestID -> "sub value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["b"]
 		,
 		False
 		,
 		TestID -> "sub value: String"
+	];
+	
+	SetAttributes[b, ReadProtected];
+	Test[
+		undefinedSymbolQ[b]
+		,
+		False
+		,
+		TestID -> "sub value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["b"]
+		,
+		False
+		,
+		TestID -> "sub value: ReadProtected: String"
 	]
 ]
 
@@ -66,13 +96,28 @@ Block[{c, d},
 		,
 		TestID -> "up value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["c"]
 		,
 		False
 		,
 		TestID -> "up value: String"
+	];
+	
+	SetAttributes[c, ReadProtected];
+	Test[
+		undefinedSymbolQ[c]
+		,
+		False
+		,
+		TestID -> "up value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["c"]
+		,
+		False
+		,
+		TestID -> "up value: ReadProtected: String"
 	]
 ]
 
@@ -86,13 +131,28 @@ Block[{e},
 		,
 		TestID -> "down value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["e"]
 		,
 		False
 		,
 		TestID -> "down value: String"
+	];
+	
+	SetAttributes[e, ReadProtected];
+	Test[
+		undefinedSymbolQ[e]
+		,
+		False
+		,
+		TestID -> "down value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["e"]
+		,
+		False
+		,
+		TestID -> "down value: ReadProtected: String"
 	]
 ]
 
@@ -106,13 +166,28 @@ Block[{f},
 		,
 		TestID -> "n value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["f"]
 		,
 		False
 		,
 		TestID -> "n value: String"
+	];
+	
+	SetAttributes[f, ReadProtected];
+	Test[
+		undefinedSymbolQ[f]
+		,
+		False
+		,
+		TestID -> "n value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["f"]
+		,
+		False
+		,
+		TestID -> "n value: ReadProtected: String"
 	]
 ]
 
@@ -126,13 +201,28 @@ Block[{g},
 		,
 		TestID -> "format value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["g"]
 		,
 		False
 		,
 		TestID -> "format value: String"
+	];
+	
+	SetAttributes[g, ReadProtected];
+	Test[
+		undefinedSymbolQ[g]
+		,
+		False
+		,
+		TestID -> "format value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["g"]
+		,
+		False
+		,
+		TestID -> "format value: ReadProtected: String"
 	]
 ]
 
@@ -146,13 +236,28 @@ Block[{h},
 		,
 		TestID -> "default value: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["h"]
 		,
 		False
 		,
 		TestID -> "default value: String"
+	];
+	
+	SetAttributes[h, ReadProtected];
+	Test[
+		undefinedSymbolQ[h]
+		,
+		False
+		,
+		TestID -> "default value: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["h"]
+		,
+		False
+		,
+		TestID -> "default value: ReadProtected: String"
 	]
 ]
 
@@ -166,13 +271,28 @@ Block[{i},
 		,
 		TestID -> "messages: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["i"]
 		,
 		False
 		,
 		TestID -> "messages: String"
+	];
+	
+	SetAttributes[i, ReadProtected];
+	Test[
+		undefinedSymbolQ[i]
+		,
+		False
+		,
+		TestID -> "messages: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["i"]
+		,
+		False
+		,
+		TestID -> "messages: ReadProtected: String"
 	]
 ]
 (* Messages leak out from Block so clear them. *)
@@ -188,13 +308,28 @@ Block[{j},
 		,
 		TestID -> "attributes: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["j"]
 		,
 		True
 		,
 		TestID -> "attributes: String"
+	];
+	
+	SetAttributes[j, ReadProtected];
+	Test[
+		undefinedSymbolQ[j]
+		,
+		True
+		,
+		TestID -> "attributes: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["j"]
+		,
+		True
+		,
+		TestID -> "attributes: ReadProtected: String"
 	]
 ]
 
@@ -206,13 +341,28 @@ Block[{k},
 		,
 		TestID -> "nothing: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["k"]
 		,
 		True
 		,
 		TestID -> "nothing: String"
+	];
+	
+	SetAttributes[k, ReadProtected];
+	Test[
+		undefinedSymbolQ[k]
+		,
+		True
+		,
+		TestID -> "nothing: ReadProtected: Symbol"
+	];
+	Test[
+		undefinedSymbolQ["k"]
+		,
+		True
+		,
+		TestID -> "nothing: ReadProtected: String"
 	]
 ]
 
@@ -224,7 +374,6 @@ Block[{l},
 		,
 		TestID -> "named pattern: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["l_"]
 		,
@@ -242,7 +391,6 @@ Block[{m},
 		,
 		TestID -> "pattern with head: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["_m"]
 		,
@@ -260,7 +408,6 @@ Block[{n},
 		,
 		TestID -> "non-symbol: Symbol"
 	];
-	
 	Test[
 		undefinedSymbolQ["2 n"]
 		,
