@@ -5,7 +5,7 @@ Get["https://raw.githubusercontent.com/jkuczm/MathematicaBootstrapInstaller/v0.1
 
 BootstrapInstall[
 	"SyntaxAnnotations",
-	"https://github.com/jkuczm/MathematicaSyntaxAnnotations/releases/download/v0.2.0/SyntaxAnnotations.zip",
+	"https://github.com/jkuczm/MathematicaSyntaxAnnotations/releases/download/v0.2.1/SyntaxAnnotations.zip",
 	"AdditionalFailureMessage" ->
 		Sequence[
 			"You can ",

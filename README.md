@@ -50,7 +50,7 @@ To load SyntaxAnnotations package evaluate: ``Needs["SyntaxAnnotations`"]``.
 ### Manual installation
 
 1. Download latest released
-   [SyntaxAnnotations.zip](https://github.com/jkuczm/MathematicaSyntaxAnnotations/releases/download/v0.2.0/SyntaxAnnotations.zip)
+   [SyntaxAnnotations.zip](https://github.com/jkuczm/MathematicaSyntaxAnnotations/releases/download/v0.2.1/SyntaxAnnotations.zip)
    file.
 
 2. Extract downloaded `SyntaxAnnotations.zip` to any directory which is on
