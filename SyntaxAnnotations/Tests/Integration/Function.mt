@@ -423,7 +423,7 @@ Test[
 		SyntaxExpr[b, "UndefinedSymbol"]
 	] // MakeBoxes
 	,
-	TestID -> "Function[{a_ = b}, a b]"
+	TestID -> "Function[{f[a] = a b}, f a b]"
 ]
 
 Test[

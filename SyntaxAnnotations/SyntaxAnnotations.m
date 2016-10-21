@@ -1,4 +1,4 @@
-﻿(* ::Package:: *)
+(* ::Package:: *)
 
 BeginPackage["SyntaxAnnotations`"]
 
@@ -1272,9 +1272,7 @@ AnnotateSyntax[boxes_, OptionsPattern[]] :=
 End[]
 
 
-Protect @ Evaluate @ Names[
-	"`" ~~ Except["$"] ~~ Repeated[WordCharacter, {0, Infinity}]
-]
+Protect@Evaluate@Names[Context[] ~~ Except["$"] ~~ Except["`"]...]
 
 
 EndPackage[]
