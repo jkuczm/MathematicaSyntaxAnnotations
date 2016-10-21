@@ -166,11 +166,11 @@ registers types in all given registers."
 
 withModifiedTypes::usage =
 "\
-withLocalVariables[{type, symNames}, body] \
+withModifiedTypes[{type, symNames}, body] \
 evaluates body with with given syntax type added to types, of given symbol \
 names symNames, in patternNameTypes and stringBoxTypes registers.
 
-withLocalVariables[{register1, register2, ...}, {type, symNames}, body] \
+withModifiedTypes[{register1, register2, ...}, {type, symNames}, body] \
 registers changes in all given registers."
 
 
@@ -379,11 +379,12 @@ extractLocalVariableNames["IntegrateDifferentialD"][
 	* {"Scoping", "List"} for boxes inside List, but not on LHS of assignment,
 	* {"Scoping", "LHS"} for boxes on LHS of assignment inside List.
 	
-	Rules extract pattern names as local variables from everything with same
-	exceptions as \[Function].
-	
 	Assignment functions extract pattern names, as local variables, from
-	everything except RHS of inner assignments. *)
+	everything except RHS of inner assignments.
+	
+	Non assignmet patterns, i.e. rules and infix Condition, extract pattern
+	names as local variables from everything with same exceptions as
+	\[Function]. *)
 
 extractLocalVariableNames["Scoping"][RowBox[{"{", argBoxes_, "}"}]] :=
 	extractLocalVariableNames[{"Scoping", "List"}][argBoxes]
@@ -391,7 +392,9 @@ extractLocalVariableNames["Scoping"][RowBox[{"{", argBoxes_, "}"}]] :=
 extractLocalVariableNames["Function"][RowBox[{"{", argBoxes_, "}"}]] :=
 	extractLocalVariableNames["\[Function]"][argBoxes]
 
-extractLocalVariableNames[type : {"Scoping", _} | "Rules" | "\[Function]"][
+extractLocalVariableNames[
+	type : {"Scoping", _} | "NonAssigPatt" | "\[Function]"
+][
 	RowBox[{
 		funcName_String /;
 			MemberQ[extendedSyntaxInformation[funcName],
@@ -403,7 +406,9 @@ extractLocalVariableNames[type : {"Scoping", _} | "Rules" | "\[Function]"][
 ] :=
 	extractLocalVariableNames[type][funcName]
 
-extractLocalVariableNames[type : {"Scoping", _} | "Rules" | "\[Function]"][
+extractLocalVariableNames[
+	type : {"Scoping", _} | "NonAssigPatt" | "\[Function]"
+][
 	RowBox[{__, "\[Function]", rhs__}]
 ] :=
 	extractLocalVariableNames[type] /@ {rhs} // Flatten
@@ -413,12 +418,14 @@ extractLocalVariableNames[{"Scoping", _}][
 ] :=
 	extractLocalVariableNames[{"Scoping", "LHS"}] /@ {lhs} // Flatten
 
-extractLocalVariableNames[type : "Rules" | "Assignment" | "\[Function]"][
+extractLocalVariableNames[
+	type : "NonAssigPatt" | "Assignment" | "\[Function]"
+][
 	RowBox[{lhs__, $assignmentOperators, __}]
 ] :=
 	extractLocalVariableNames[type] /@ {lhs} // Flatten
 
-extractLocalVariableNames[type : "Rules" | "Assignment"][
+extractLocalVariableNames[type : "NonAssigPatt" | "Assignment"][
 	RowBox[{name_String, ":", rest__}]
 ] :=
 	{
@@ -439,13 +446,13 @@ extractLocalVariableNames[{"Scoping", "List"} | "Function" | "\[Function]"][
 extractLocalVariableNames[{"Scoping", "LHS"}][name_String] :=
 	extractSymbolName[name]
 
-extractLocalVariableNames["Rules" | "Assignment"][
+extractLocalVariableNames["NonAssigPatt" | "Assignment"][
 	(name_String /; StringMatchQ[name, Except["_"].. ~~ "_" ~~ ___])
 ] :=
 	extractSymbolName[name]
 
 extractLocalVariableNames[
-	type : {"Scoping", _} | "Rules" | "Assignment" | "\[Function]"
+	type : {"Scoping", _} | "NonAssigPatt" | "Assignment" | "\[Function]"
 ][boxes:(_[__])] :=
 	extractLocalVariableNames[type] /@ List @@ boxes // Flatten
 
@@ -514,8 +521,8 @@ extendedSyntaxInformation["\[Sum]" | "\[Product]"] :=
 extendedSyntaxInformation["\[Integral]"] :=
 	{"LocalVariables" -> {"IntegrateDifferentialD", {2, \[Infinity]}}}
 
-extendedSyntaxInformation[$ruleOperators] :=
-	{"LocalVariables" -> {"Rules", {1}}}
+extendedSyntaxInformation[$ruleOperators | "/;"] :=
+	{"LocalVariables" -> {"NonAssigPatt", {1}}}
 
 extendedSyntaxInformation[$assignmentOperators] :=
 	{"LocalVariables" -> {"Assignment", {1}}}
@@ -908,6 +915,13 @@ parse[mode:Except["AssignmentLHS"]][
 		}]
 	]
 
+parse[mode_][RowBox[boxes : {patt_, "/;", test_}]] :=
+	withLocalVariables[{"/;", localVars, RowBox[{patt, ",", test}]},
+		withModifiedTypes[{{"PatternVariable", "/;"}, localVars},
+			RowBox[parse[mode] /@ boxes]
+		]
+	]
+
 parse[mode_][
 	boxes : RowBox[{
 		PatternSequence[tag_, tagSep:"/:"] | PatternSequence[],
@@ -1005,7 +1019,7 @@ normalizeAnnotationTypes[types_List] :=
 		},
 		(*	Local scope conflict arises when we have:
 			 *	Scoping inside Scoping,
-			 *	Scoping, any non-\[Function] PatternVariable, or
+			 *	Scoping, any non-\[Function] and non-/; PatternVariable, or
 			 	LocalScopeConflict from using pattern on RHS of delayed rule or
 			 	assignment, inside PatternVariable that is not from \[Function]
 			 	nor LHS of a rule.
@@ -1017,7 +1031,7 @@ normalizeAnnotationTypes[types_List] :=
 			Position[newTypes,
 				Except[
 					{"PatternVariable", $ruleOperators, "LHS"},
-					{"PatternVariable", Except["\[Function]"], ___}
+					{"PatternVariable", Except["\[Function]" | "/;"], ___}
 				],
 				{1}, 2, Heads -> False
 			];
@@ -1026,7 +1040,7 @@ normalizeAnnotationTypes[types_List] :=
 				Position[reversedTypes,
 					{
 						"PatternVariable" | "LocalScopeConflict",
-						Except["\[Function]"],
+						Except["\[Function]" | "/;"],
 						___
 					},
 					{1}, 1, Heads -> False
@@ -1034,7 +1048,7 @@ normalizeAnnotationTypes[types_List] :=
 		locScopeConfPos =
 			Which[
 				(*	<no conflict>,
-					first non-Rule-LHS non-\[Function] PatternVariable,
+					first non-Rule-LHS non-\[Function] non-/; PatternVariable,
 					...,
 					first Scoping,
 					... *)
@@ -1048,7 +1062,7 @@ normalizeAnnotationTypes[types_List] :=
 					scopingPos[[1, 1]]
 				,
 				(*	<no conflict>,
-					first non-Rule-LHS non-\[Function] PatternVariable,
+					first non-Rule-LHS non-\[Function] non-/; PatternVariable,
 					...,
 					last Scoping or any PatternVariable,
 					... *)

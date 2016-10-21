@@ -456,6 +456,86 @@ Test[
 
 
 (* ::Subsection:: *)
+(*Condition*)
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a /; a]
+	,
+	MakeBoxes[
+		SyntaxExpr[a, "UndefinedSymbol"] /; SyntaxExpr[a, "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a /; a"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a__ /; a]
+	,
+	MakeBoxes[
+		SyntaxExpr[a__, "PatternVariable"] /;
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a__ /; a"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a /; a___]
+	,
+	MakeBoxes[SyntaxExpr[a, "UndefinedSymbol"] /; a___]
+	,
+	TestID -> "a /; a___"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a_ /; a_]
+	,
+	MakeBoxes[
+		SyntaxExpr[a_, "PatternVariable"] /; SyntaxExpr[a_, "PatternVariable"]
+	]
+	,
+	TestID -> "a_ /; a_"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a__ b_ /; a b]
+	,
+	MakeBoxes[
+		SyntaxExpr[a__, "PatternVariable"] SyntaxExpr[b_, "PatternVariable"] /;
+			SyntaxExpr[a, "PatternVariable", "UndefinedSymbol"] *
+			SyntaxExpr[b, "PatternVariable", "UndefinedSymbol"]
+	]
+	,
+	TestID -> "a__ b_ /; a b"
+]
+
+
+Test[
+	AnnotateSyntax @ MakeBoxes[a:a /; a:a]
+	,
+	MakeBoxes[
+		RawBoxes@RowBox[{
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+			":",
+			SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+		}] /;
+			RawBoxes@RowBox[{
+				SyntaxBox["a", "PatternVariable", "UndefinedSymbol"],
+				":",
+				SyntaxBox["a", "PatternVariable", "UndefinedSymbol"]
+			}]
+	]
+	,
+	TestID -> "a:a /; a:a"
+]
+
+
+(* ::Subsection:: *)
 (*UpSetDelayed*)
 
 
