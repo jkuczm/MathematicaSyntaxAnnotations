@@ -1,6 +1,17 @@
 (* ::Package:: *)
 
-BeginPackage["SyntaxAnnotations`"]
+(* SyntaxAnnotations package
+
+Copyright (c) 2015 - 2019 Jakub Kuczmarski <Jakub.Kuczmarski@gmail.com>
+Released under The MIT License
+https://github.com/jkuczm/MathematicaSyntaxAnnotations/blob/master/LICENSE *)
+
+
+(*	Begining of package context with ` is intentionall it allows loading
+	SyntaxAnnotations as a sub-package. Apropriate steps to load package with
+	SyntaxAnnotations` as "top level" context are taken in Kernel/init.m.
+	This is inspired by system used in https://github.com/szhorvat/LTemplate *)
+BeginPackage["`SyntaxAnnotations`"]
 
 
 Unprotect["`*"]

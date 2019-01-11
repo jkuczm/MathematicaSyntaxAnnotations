@@ -17,6 +17,7 @@ Annotate syntax elements at box level.
 * [Compatibility](#compatibility)
 * [Bugs and requests](#bugs-and-requests)
 * [Contributing](#contributing)
+* [Usage in other packages](#usage-in-other-packages)
 * [License](#license)
 * [Versioning](#versioning)
 
@@ -79,7 +80,7 @@ PacletUninstall@"SyntaxAnnotations"
 
 To use package directly from the Web, without installation, evaluate:
 ```Mathematica
-Import@"https://raw.githubusercontent.com/jkuczm/MathematicaSyntaxAnnotations/master/SyntaxAnnotations/SyntaxAnnotations.m"
+Import@"https://raw.githubusercontent.com/jkuczm/MathematicaSyntaxAnnotations/master/NoInstall.m"
 ```
 
 
@@ -110,6 +111,51 @@ If you find any bugs or have feature request please create an
 Feel free to fork and send pull requests.
 
 All contributions are welcome!
+
+
+
+## Usage in other packages
+
+There are two ways to use SyntaxAnnotations with your own package.
+
+First is to require users, of your package, to install SyntaxAnnotations
+separately. Your package can then load it, as any other external package, using
+``Get@"SyntaxAnnotations`"``. Be aware that if your package requires specific
+version of SyntaxAnnotations and user wants to use other package requiring
+different version of SyntaxAnnotations it may lead to a version conflict.
+
+Second way is to include specific version of SyntaxAnnotations as sub-package
+of your package. To do it, simply put `SyntaxAnnotations.m` file inside main
+directory of your package. And load it using ``Get@"`SyntaxAnnotations`"``
+(note the grave accent character at the beginning of string) somewhere inside
+main context of your package.
+
+Directory structure of ``YourPackage` `` can, for example, look like this:
+
+```
+YourPackage
+├── Kernel
+│   └── init.m
+├── SyntaxAnnotations.m
+└── YourPackage.m
+```
+
+and `YourPackage.m` file:
+
+```Mathematica
+BeginPackage@"YourPackage`"
+(* Public symbols usage *)
+Get@"`SyntaxAnnotations`"
+Begin@"`Private`"
+(* Implementation *)
+End[]
+EndPackage[]
+```
+
+This way specific version of SyntaxAnnotations package, distributed with your
+package, will be loaded as ``YourPackage`SyntaxAnnotations` ``, and will be
+completely independent of other versions of SyntaxAnnotations possibly used by
+user of your package.
 
 
 
