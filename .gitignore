@@ -1,5 +1,4 @@
 .directory
 /build
 /private
-/buildScripts/build.properties
-/SyntaxAnnotations.zip
+/SyntaxAnnotations-*.*.*.paclet
